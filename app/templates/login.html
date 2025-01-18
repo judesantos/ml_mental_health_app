@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="content">
+        <form id="frm-login" method="POST" action="{{ url_for('auth.login') }}">
+            <h1>Login</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <ul> {% for category, message in messages %}
+                    <p id="error" class="form-error">{{ message }}</p>
+                {% endfor %} </ul> {% endif %}
+            {% endwith %}
+            <table>
+                <tr> <td>
+                    {{ form.username(class_="form-control") }}
+                    {% for error in form.username.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td> </tr>
+                <tr> <td>
+                    {{ form.password(class_="form-control") }}
+                    {% for error in form.password.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td></tr>
+                {{ form.hidden_tag() }}
+            </table>
+            {{ form.submit }}
+            <a href="">Reset password</a>
+            <a href="{{ url_for('auth.login_google') }}">Login with Google</a>
+            <a href="{{ url_for('auth.signup') }}">Register here</a>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2025 yourtechy.com LLC. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+<script>
+    //console.log('login.html');
+    //// JavaScript to remove error messages on user input
+    //document.getElementById('frm-login').addEventListener('input', function(event) {
+    //    console.log('input event');
+    //    document.getElementById('error').textContent = '';
+    //    document.getElementById('ferror').textContent = '';
+    //});
+</script>

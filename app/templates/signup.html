@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="content">
+        <form method="POST" action="{{ url_for('auth.signup') }}">
+            <h1>Register</h1>
+            <!-- Display flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <ul> {% for category, message in messages %}
+                    <p id="error" class="form-error">{{ message }}</p>
+                {% endfor %} </ul> {% endif %}
+            {% endwith %}
+            <table>
+                <tr> <td>
+                    {{ form.username(class_="form-control") }}
+                    {% for error in form.username.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td> </tr>
+                <tr> <td>
+                    {{ form.email(class_="form-control") }}
+                    {% for error in form.email.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td> </tr>
+                <tr> <td>
+                    {{ form.phone(class_="form-control") }}
+                    {% for error in form.phone.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td> </tr> <tr> <td>
+                    {{ form.password(class_="form-control") }}
+                    {% for error in form.password.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td> </tr>
+                <tr> <td>
+                    {{ form.confirm_password(class_="form-control") }}
+                    {% for error in form.confirm_password.errors %}
+                        <p id="ferror" class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </td> </tr>
+                {{ form.hidden_tag() }}
+            </table>
+            {{ form.submit(class_="btn btn-primary") }}
+
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.login_google') }}">Login with Google</a>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2025 yourtechy.com LLC. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+<script>
+    // JavaScript to remove error messages on user input
+    //document.getElementById('signup-form').addEventListener('input', function (event) {
+    //    document.getElementById('error').textContent = '';
+    //    document.getElementById('ferror').textContent = '';
+    //});
+</script>

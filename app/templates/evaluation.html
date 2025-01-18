@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="survey-header">
+        <h1>Mental Health Assessment</h1>
+    </div>
+    <form method="POST" action="{{ url_for('main.evaluation') }}">
+        {{ form.hidden_tag() }}
+        <!-- General Health Section -->
+        <div class="accordion" id="frm-section-acc">
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="frmsec-genrl-hlth">
+                    <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        1. General Health and Well-being
+                    </button>
+                </h4>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="frmsec-genrl-hlth" data-bs-parent="#frm-section-acc">
+                    <div class="accordion-body">
+                        {% for field in [form.poorhlth, form.physhlth, form.genhlth, form.diffwalk, form.diffalon, form.checkup1] %}
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ field.label.text }}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted">{{ field.description }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ field(class="form-select") }}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!-- Mental Health Section -->
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="frmsec-mtl-hlth">
+                    <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mentalHealth" aria-expanded="false" aria-controls="mentalHealth">
+                        2. Mental Health and Support
+                    </button>
+                </h4>
+                <div id="mentalHealth" class="accordion-collapse collapse" aria-labelledby="frmsec-mtl-hlth" data-bs-parent="#frm-section-acc">
+                    <div class="accordion-body">
+                        {% for field in [form.addepev3, form.acedeprs, form.sdlonely, form.lsatisfy, form.emtsuprt, form.decide, form.cdsocia1] %}
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ field.label.text }}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted">{{ field.description }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ field(class="form-select") }}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lifestyle and Habits Section -->
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="frmsec-lfst-hlth">
+                    <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lifestyle" aria-expanded="false" aria-controls="lifestyle">
+                        3. Lifestyle and Habits
+                    </button>
+                </h4>
+                <div id="lifestyle" class="accordion-collapse collapse" aria-labelledby="frmsec-lfst-hlth" data-bs-parent="#frm-section-acc">
+                    <div class="accordion-body">
+                        {% for field in [form.smokday2, form.alcday4, form.marijan1, form.exeroft1, form.usenow3] %}
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ field.label.text }}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted">{{ field.description }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ field(class="form-select") }}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Socioeconomic Factors Section -->
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="frmsec-soce-hlth">
+                    <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#socioEconomic" aria-expanded="false" aria-controls="socioEconomic">
+                        4. Socioeconomic Factors
+                    </button>
+                </h4>
+                <div id="socioEconomic" class="accordion-collapse collapse" aria-labelledby="frmsec-soce-hlth" data-bs-parent="#frm-section-acc">
+                    <div class="accordion-body">
+                        {% for field in [form.income3, form.educa, form.employ1, form.marital, form.state, form.sdhbills, form.sdhemple, form.sdhfood1, form.sdhstre1, form.sdhutils, form.sdhtrnsp, form.cdshous1] %}
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ field.label.text }}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted">{{ field.description }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ field(class="form-select") }}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chronic Conditions and Medical History -->
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="frmsec-medh-hlth">
+                    <button class="acc-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#medicalHistory" aria-expanded="false" aria-controls="medicalHistory">
+                        5. Chronic Conditions and Medical History
+                    </button>
+                </h4>
+                <div id="medicalHistory" class="accordion-collapse collapse" aria-labelledby="frmsec-medh-hlth" data-bs-parent="#frm-section-acc">
+                    <div class="accordion-body">
+                        {% for field in [form.hvarth4, form.diabete4, form.cholchk3, form.bpmeds1, form.bphigh6, form.cvdstrk3, form.cvdcrhd4, form.chckdny2, form.cholmed3] %}
+                            <div class="row mb-3 align-items-center">
+                                <div class="col-md-3">
+                                    <label class="form-label">{{ field.label.text }}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-muted">{{ field.description }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ field(class="form-select") }}
+                                    {% if field.errors %}
+                                        <div class="text-danger">
+                                            {% for error in field.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="survey-submit">
+            {{ form.submit_button() }}
+            <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+        </div>
+    </form>
+
+</div>
+{% endblock %}

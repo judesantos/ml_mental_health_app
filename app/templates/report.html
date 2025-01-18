@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="survey-wrapper">
+        <div class="survey-header">
+            <div class="row mb-12">
+                <div class="col-md-10">
+                    <h1>Mental Health Assessment Report</h1>
+                </div>
+                <div class="col-md-2 align-items-right">
+                    <button onclick="window.print()" class="btn btn-primary print-btn">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                </div>
+            </div>
+            <p>Here are your assessment results</p>
+        </div>
+
+        <div class="survey-content">
+            <!-- General Health Section -->
+            <div class="survey-section">
+                <h2>1. General Health</h2>
+                <div class="report-grid">
+                    {% for field in [form.poorhlth, form.physhlth, form.genhlth, form.diffwalk, form.diffalon, form.checkup1] %}
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label">{{ field.label.text }}</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted">{{ field.description }}</p>
+                            </div>
+                            <div class="col-md-3 answer">
+                                <p>{{ field.selected[1] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Mental Health Section -->
+            <div class="survey-section">
+                <h2>2. Mental Health</h2>
+                <div class="report-grid">
+                    {% for field in [form.addepev3, form.acedeprs, form.sdlonely, form.lsatisfy, form.emtsuprt, form.decide, form.cdsocia1] %}
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label">{{ field.label.text }}</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted">{{ field.description }}</p>
+                            </div>
+                            <div class="col-md-3 answer">
+                                <p>{{ field.selected[1] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Lifestyle and Habits Section -->
+            <div class="survey-section">
+                <h2>3. Lifestyle and Habits</h2>
+                <div class="report-grid">
+                    {% for field in [form.smokday2, form.alcday4, form.marijan1, form.exeroft1, form.usenow3] %}
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label">{{ field.label.text }}</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted">{{ field.description }}</p>
+                            </div>
+                            <div class="col-md-3 answer">
+                                <p>{{ field.selected[1] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Socioeconomic Factors Section -->
+            <div class="survey-section">
+                <h2>4. Socioeconomic Factors</h2>
+                <div class="report-grid">
+                    {% for field in [form.hvarth4, form.diabete4, form.cholchk3, form.bpmeds1, form.bphigh6, form.cvdstrk3, form.cvdcrhd4, form.chckdny2, form.cholmed3] %}
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label">{{ field.label.text }}</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted">{{ field.description }}</p>
+                            </div>
+                            <div class="col-md-3 answer">
+                                <p>{{ field.selected[1] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Chronic Conditions and Medical History -->
+            <div class="survey-section">
+                <h2>5. Chronic Conditions and Medical History</h2>
+                <div class="report-grid">
+                    {% for field in [form.hvarth4, form.diabete4, form.cholchk3, form.bpmeds1, form.bphigh6, form.cvdstrk3, form.cvdcrhd4, form.chckdny2, form.cholmed3] %}
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-3">
+                                <label class="form-label">{{ field.label.text }}</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted">{{ field.description }}</p>
+                            </div>
+                            <div class="col-md-3 answer">
+                                <p>{{ field.selected[1] }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

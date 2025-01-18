@@ -1,0 +1,89 @@
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directories
+env/
+venv/
+ENV/
+.venv/
+.idea/
+
+# Environment variables
+.env
+.env.*
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.eggs/
+*.manifest
+*.spec
+
+# Log files
+*.log
+*.out
+*.err
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Cache files and directories
+*.cache
+*.pytest_cache/
+cache/
+
+# Unit test and coverage reports
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+.tox/
+.nox/
+*.coverage
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# Docker
+*.pid
+
+# Profiling
+.prof
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# IDEs and editors
+.vscode/
+*.code-workspace
+.idea/
+*.iml
+
+# Python-specific package management files
+pip-wheel-metadata/
+*.whl
+Pipfile
+Pipfile.lock
+
+# Temporary files
+*.temp
+*.tmp
+*.swp
+*.swo
+.~*
+
+# Other tools
+*.pkl
+*.ipynb
+
+app/certs
+instance/

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mental Health App{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='image/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="menu left-menu">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="App Logo">
+            </div>
+            <div class="menu right-menu">
+                <ul>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                        {% if request.endpoint != 'main.evaluation' %}
+                            <li><a href="{{ url_for('main.evaluation') }}">Evaluation</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('auth.logout') }}" class="btn logout">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('auth.login') }}" class="btn login">Login</a></li>
+                        <li><a href="{{ url_for('auth.signup') }}" class="btn signup">Register</a></li>
+                        <li>
+                            <a href="{{ url_for('auth.login_google') }}" class="google">
+                                <img src="{{ url_for('static', filename='image/google.svg') }}" alt="Google">
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Mental Health Support. All rights reserved.</p>
+        </footer>
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

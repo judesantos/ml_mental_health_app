@@ -1,0 +1,19 @@
+# This file is conda file used to setup a python application environment for project ml_ci_cd
+
+name: ml_ci_cd
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - flask
+  - flask-oauthlib
+  - pandas
+  - pydantic
+  - pydantic-settings
+  - numpy
+  - sqlalchemy
+  - flake8
+  - pip:
+    - flask-jwt-extended==4.7.1

@@ -1,0 +1,283 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    background-image: url('/static/image/clouds.webp');
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Flexbox container for the page */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures full height */
+}
+
+/* Main content grows to fill available space */
+main {
+    flex: 1; /* Allows main to take all available space */
+    justify-content: center;
+    flex-grow: 1;
+    overflow-y: auto;
+    text-align: center;
+    flex-direction: column;
+}
+
+/* Header Styles */
+header {
+    background-color: #007BFF;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 1em;
+    position: relative;
+}
+
+header .menu {
+    display: flex;
+}
+
+header .menu ul {
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+header .menu ul li {
+    margin: 0 0.1em;
+}
+
+header .menu ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 0.1em;
+}
+
+header .menu ul li a:hover {
+  color: #00aaff;
+}
+
+/* Footer styling */
+footer {
+    display: flex;
+    color: #bbb3b3;
+    padding: 12px 25px 0 10px;
+    flex-direction: row;
+    margin: 0 35px;
+    justify-content: right;
+    flex-shrink: 0;
+}
+
+
+.content {
+    display: flex;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 10%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 4rem 2rem;
+}
+
+form {
+    min-width: 400px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    opacity: 0.8;
+}
+
+table {
+    width: 100%;
+    border-spacing: 10px;
+}
+
+td {
+    vertical-align: middle;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    margin: 10px;
+}
+
+.form-error {
+    color: rgb(240, 41, 41);
+    padding: 2px;
+    margin: 2px 2px 2px;
+    font-size: 8;
+}
+
+.error {
+    color: rgb(240, 41, 41);
+    font-size: 2em;
+}
+
+.survey-submit {
+    width: 100%;
+    margin: 20px 0 10px 0;
+    text-align: right;
+}
+
+
+.survey-submit button {
+    width: 20%;
+    padding: 10px 0;
+}
+
+.survery-wrapper {
+    margin: 20px !important;
+}
+
+.acc-btn {
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    font-size: 20px;
+    background-color: #fff !important;
+    color: #0a58ca;
+    margin: 2px 0;
+    transition: all 0.3s ease; /* Smooth transition effect */
+}
+
+.acc-btn:hover {
+    color: #0a58ca;
+    transform: scale(1.02);
+}
+
+.accordion-body select {
+    transition: all 0.1s ease; /* Smooth transition effect */
+}
+.accordion-body select:hover {
+    border-color: #0a58ca;
+    transform: scale(1.01);
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form-label {
+    flex: 2;
+    margin: 0 10px;
+    text-align: left;
+}
+
+.form-select {
+    flex: 1;
+    /*
+    direction: rtl;
+    text-align: right;
+    text-align-last: right;
+    */
+
+}
+
+.google {
+    display: flex;
+    align-items: center;
+    color: #3c4043;
+}
+
+.google img {
+    height: 30px;
+}
+
+.google img:hover {
+    transform: scale(1.05);
+}
+
+.container {
+    margin: 15px 0 0 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    text-align: justify;
+    padding: 25px !important;
+}
+
+.report {
+    color: rgba(23, 22, 22, 0.777);
+    margin: 10px;
+}
+
+h1, h2 {
+    color: #333;
+}
+.section {
+}
+
+.section h2 {
+    padding: 10px;
+}
+.question {
+    margin-left: 20px;
+}
+.question span {
+    font-weight: normal;
+}
+
+.answer {
+    color: black;
+}
+
+.answer p {
+    font-weight: bolder;
+    padding-left: 25px !important;
+}
