@@ -85,6 +85,6 @@ Pipfile.lock
 *.pkl
 *.ipynb
 
-certs/
+certs/*
 instance/
-data/
+data/*
