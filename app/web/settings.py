@@ -43,6 +43,13 @@ class Settings(BaseSettings):
     GOOGLE_DISCOVERY_URL: str
     MAX_CONTENT_LENGTH: int
 
+    # Initialize config based on .env file
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        extra='ignore'
+    )
+
     @field_validator('MAX_CONTENT_LENGTH', mode='before', check_fields=False)
     def parse_max_content_length(cls, v):
         """
@@ -52,31 +59,6 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return eval(v)
 
-    @field_validator(
-        'SQLALCHEMY_DATABASE_URI',
-        mode='before',
-        check_fields=False
-    )
-    def parse_sqlite_db_path(cls, v):
-        """
-        Convert the SQLite database path to an absolute path.
-        Prepend the SQLite URI to the absolute path, if not present.
-        """
-
-        db_path = v
-        sqlite_uri = 'sqlite:///'
-
-        db_path = db_path[len(sqlite_uri):]
-        db_path = sqlite_uri + os.path.abspath(db_path)
-
-        return db_path
-
-    # Initialize config based on .env file
-    model_config = SettingsConfigDict(
-        env_file='.env',
-        env_file_encoding='utf-8',
-        extra='ignore'
-    )
 
 
 settings = Settings()

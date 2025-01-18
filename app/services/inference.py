@@ -18,7 +18,7 @@ from flask import Blueprint, abort, request
 from pydantic import ValidationError
 
 from ..src.model.apartment import Apartment
-from services import model_inference_service as model
+from app.services.inference import model_inference_service as model
 
 
 bp = Blueprint('prediction', __name__, url_prefix='/pred')

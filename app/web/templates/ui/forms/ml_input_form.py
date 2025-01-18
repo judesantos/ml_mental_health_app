@@ -11,7 +11,7 @@ Classes:
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 
-from ui.ml_features import MLFeaturesMap, MLFeature, create_features
+from web.templates.ui.ml_features import MLFeaturesMap, MLFeature, create_features
 
 
 class DescriptiveSelectField(SelectField):

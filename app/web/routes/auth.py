@@ -16,15 +16,16 @@ from flask import Blueprint, request, jsonify, url_for, flash
 from flask import session, redirect, render_template
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_jwt_extended import unset_jwt_cookies, set_access_cookies
-from flask_jwt_extended import get_jwt_identity
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user
 
-from extensions import db, oauth, limiter
-from settings import settings
-from models.user import User
+from web.extensions import db, oauth, limiter
+from web.settings import settings
+from web.models.user import User
 
-from ui.forms.signup_form import SignupForm
-from ui.forms.login_form import LoginForm
+from web.templates.ui.forms.signup_form import SignupForm
+from web.templates.ui.forms.login_form import LoginForm
+
+from loguru import logger
 
 bp = Blueprint('auth', __name__)
 
@@ -43,7 +44,7 @@ oauth.register(
 
 
 @bp.route('/login/google')
-@limiter.limit("5 per minute")
+@limiter.limit("100 per minute")
 def login_google():
     """
     This functin redirect the user authentication to the Google login page.
@@ -61,7 +62,7 @@ def login_google():
 
 
 @bp.route('/authorize/google')
-@limiter.limit("5 per minute")
+@limiter.limit("100 per minute")
 def authorize_google():
     """
     Google login callback function.
@@ -96,57 +97,8 @@ def authorize_google():
     }), 200
 
 
-@bp.route('/protected', methods=['GET'])
-@limiter.limit("5 per minute")
-@jwt_required()
-def protected():
-    """
-    This is an example endpoint that requires a valid access token to access.
-    """
-    current_user = get_jwt_identity()
-    return jsonify({
-        "message": f"Welcome {current_user}, you have accessed a protected \
-        route!"
-    }), 200
-
-
-@bp.route('/register', methods=['POST'])
-@limiter.limit("5 per minute")
-def register():
-    """
-    Registers a new user with the provided username, password, and email.
-    The username, password, and email are required parameters in the
-    request body.
-    Saves the user information to the database.
-
-    Returns:
-        400: If the username, password, or email are missing, or if the email
-            is already registered.
-        201: If the user is registered successfully.
-    """
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    email = data.get('email')
-
-    if not username or not password or not email:
-        return jsonify({
-            "message": "Username, password, and email are required"
-        }), 400
-
-    if User.query.filter_by(email=email).first():
-        return jsonify({"message": "Email already registered"}), 400
-
-    user = User(username=username, email=email)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
-
-    return jsonify({"message": "User registered successfully"}), 201
-
-
 @bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
+@limiter.limit("100 per minute")
 def login():
     """
     Login registed user with the provided username and password.
@@ -168,8 +120,10 @@ def login():
             # Check if the user exists by validating username
             user = User.query.filter_by(username=username).first()
             if not user:
+                # User may have registered with email
                 user = User.query.filter_by(email=username).first()
             if user:
+                # User found, check password
                 if user.check_password(password=password):
                     session['user_id'] = user.id
                     # Validation successful, create access token and
@@ -180,15 +134,18 @@ def login():
                 validation_success = False
 
             if validation_success is False:
+                logger.warning(f'Login failed: addr: {request.remote_addr}')
                 flash('Invalid username or password', 'danger')
+
                 return redirect(url_for('auth.login'))
 
         except Exception as e:
-            print(f'Database exception: {str(e.with_traceback(None))}')
+            logger.error(f'Database exception: {str(e)}')
             flash(
                 'Server encountered a problem, please try again.',
                 category='danger'
             )
+
             return redirect(url_for('auth.login'))
 
         # Login successful, redirect to the dashboard
@@ -202,14 +159,18 @@ def login():
         access_token = create_access_token(identity=user.username)
         set_access_cookies(response, access_token)
 
-        print('Login Success. Redirect to dashboard')
+        logger.debug(
+            f'Login Success. addr: {request.remote_addr}, uid: {user.id}'
+        )
+
         return response
 
+    logger.debug( f'Login request: addr: {request.remote_addr}')
     return render_template('login.html', form=form)
 
 
 @bp.route('/logout', methods=['get'])
-@limiter.limit("10 per minute")
+@limiter.limit("100 per minute")
 @jwt_required()
 def logout():
     """
@@ -218,6 +179,8 @@ def logout():
 
     Redirects to the home page after logout.
     """
+
+    logger.debug(f'Logout request. addr: {request.remote_addr}')
 
     logout_user()
     session.clear()
@@ -232,11 +195,12 @@ def logout():
     # Remove JWT cookies to invalidate the session
     unset_jwt_cookies(response)
 
+    logger.debug(f'Logout request complete. addr: {request.remote_addr}')
     return redirect(url_for('main.home'))
 
 
 @bp.route('/signup', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
+@limiter.limit("100 per minute")
 def signup():
 
     form = SignupForm()
@@ -258,40 +222,37 @@ def signup():
                 if existing_user:
                     flash('Phone number exists.', 'error')
             if existing_user:
-                print('User exists')
+                logger.warning(f'Registration error: User exists: {existing_user.id}')
                 return redirect(url_for('auth.signup'))
 
-            # Add new user to the database
-            new_user = User(
-                email=email,
-                username=username,
-                phone=phone
-            ).set_password(str(password))
+            try:
+                # Add new user to the database
+                new_user = User(
+                    email=email,
+                    username=username,
+                    phone=phone
+                ).set_password(str(password))
 
-            db.session.add(new_user)
-            db.session.commit()
+                db.session.add(new_user)
+                db.session.commit()
+            except Exception as e:
+                # Log database exceptions
+                # Send a flash message to the user
+                logger.error(f'Signup db exception: {str(e)}')
+                flash('Unknown error, please try again.', 'danger')
+                return redirect(url_for('auth.signup'))
 
         except Exception as e:
             # Log database exceptions
-            print(f'DB Exception: {str(e)}')
             # Send a flash message to the user
-            flash(
-                'Server encountered a problem, please try again.',
-                category='danger'
-            )
+            logger.error(f'Signup exception: {str(e)}')
             flash('Unknown error, please try again.', 'danger')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.signup'))
 
+        logger.debug(f'User registered: addr: {request.remote_addr} uid: {new_user.id}')
         # Registration complete, redirect to login
         return redirect(url_for('auth.login'))
 
+    logger.debug(f'Signup request: addr: {request.remote_addr}')
     return render_template('signup.html', form=form)
 
-
-@bp.route('/error')
-@limiter.limit("2 per minute")
-def error():
-    """
-    Display a custom error message when login fails.
-    """
-    return render_template('error.html')
