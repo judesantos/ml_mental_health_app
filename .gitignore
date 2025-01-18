@@ -86,5 +86,7 @@ Pipfile.lock
 *.ipynb
 
 instance/
+data/*
 !data/
+certs/*
 !certs/
