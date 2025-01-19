@@ -383,7 +383,7 @@ def _save_model(model):
 
     # We need to update the environment variable to let the
     # inference service know of the latest model
-    settings.update({'MODEL_NAME': model_name})
+    settings.update({'MODEL_DEPLOYED': model_name})
 
 
 def _get_elapsed(start, end):
