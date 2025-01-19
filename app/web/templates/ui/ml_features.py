@@ -4,58 +4,15 @@ CDC Behavioral Risk Factor Surveillance System (BRFSS) mental health data.
 
 The list of features is used to generate the machine learning input form
 for the mental health classification model.
+
 Classes:
     Validation: A dictionary class for validation rules
     MLFeature: A class for machine learning data features
+    MLFeaturesMap: A dictionary class for MLFeature objects
 
-Attributes:
-    ml_features: A list of machine learning features for the mental health
-        classification model with the following ml features:
-        - General Health Section listed according to its unique id:
-            - POORHLTH
-            - PHYSHLTH
-            - GENHLTH
-            - DIFFWALK
-            - DIFFALON
-            - CHECKUP1
-        - Mental Health Section:
-            - ADDEPEV3
-            - ACEDEPRS
-            - SDLONELY
-            - LSATISFY
-            - EMTSUPRT
-            - DECIDE
-            - CDSOCIA1
-        - Lifestyle and Habits Section:
-            - SMOKDAY2
-            - ALCDAY4
-            - MARIJAN1
-            - EXEROFT1
-            - USENOW3
-        - Socioeconomic Factors Section:
-            - INCOME3
-            - EDUCA
-            - EMPLOY1
-            - MARITAL
-            - STATE
-            - SDHBILLS
-            - SDHEMPLY
-            - SDHFOOD1
-            - SDHSTRE1
-            - SDHUTILS
-            - SDHTRNSP
-            - CDHOUS1
-        - Chronic Conditions and Medical History Section:
-            - HAVARTH4
-            - DIABETE4
-            - CHOLCHK3
-            - BPMEDS1
-            - BPHIGH6
-            - CVDSTRK3
-            - CVDCRHD4
-            - CHCKDNY2
-            - CHOLMED3
-
+Functions:
+    create_features: Initialize and return an instance of a predefined list of
+        ML features for the input form.
 """
 
 from wtforms.validators import DataRequired
@@ -137,6 +94,7 @@ def create_features() -> MLFeaturesMap:
     Returns:
         dict: A dictionary of ML features for the mental health
             classification model input form.
+
     """
 
     ml_features = MLFeaturesMap()
@@ -223,6 +181,15 @@ def create_features() -> MLFeaturesMap:
     )
     ml_features[feat.id] = feat
 
+    feat = MLFeature(
+        id='DIFFDRES',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Difficulty Dressing or Bathing',
+        question='Do you have difficulty dressing or bathing?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
     # 2. Mental Health Section
     ########################################################################
 
@@ -299,6 +266,29 @@ def create_features() -> MLFeaturesMap:
         question='During the past 12 months, have your difficulties '
         'with thinking or memory interfered with your ability to work '
         'or volunteer?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='CDDISCU1',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='''Have you discussed your difficulties with thinking
+        with a health care provider?''',
+        question='''Have you or anyone else discussed your difficulties
+        with thinking or memory with a health care provider?''',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='CIMEMLO1',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='''Have you experienced difficulties with thinking or memory
+        that is happening more often or is getting worse?''',
+        question='''During the past 12 months, have you experienced
+        difficulties with thinking or memory that are happening more
+        often or are getting worse?''',
         validators=[DataRequired()]
     )
     ml_features[feat.id] = feat
@@ -385,6 +375,15 @@ def create_features() -> MLFeaturesMap:
     )
     ml_features[feat.id] = feat
 
+    feat = MLFeature(
+        id='FIREARM5',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Any Firearms in Hom',
+        question='Are any firearms now kept in or around your home?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
     # 4. Socioeconomic Factors Section
     #######################################################################
 
@@ -432,12 +431,56 @@ def create_features() -> MLFeaturesMap:
     ml_features[feat.id] = feat
 
     feat = MLFeature(
+        id='SEX',
+        options={'Male': '1', 'Female': '2', 'Note Sure': '7',
+                 'Refused': '9'},
+        label='Are you male or female?',
+        question='What was your sex at birth? Was it male or female?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
         id='MARITAL',
         options={'Married': '1', 'Divorced': '2', 'Widowed': '3',
                  'Separated': '4', 'Never married':
                  '5', 'Living with a partner': '6', 'Refused': '9'},
         label='Marital Status',
         question="Are you: (marital status)",
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='ADULT',
+        options={'Yes': '1', 'No': '2'},
+        label='Adult?',
+        question="Are you 18 years of age or older?",
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='RRCLASS3',
+        options={'White': '1', 'Black': '2', 'Hispanic or Latino': '3',
+                 'Asian': '4', 'Native Hawaiian or Pacific Islander': '5',
+                 'American Indian or Alaska Native': '6', 'Mixed Race': '7',
+                 'Other': '8', 'Not Sure': '77', 'Refused': '99'},
+
+        label='How do other people usually classify you in this country?',
+        question='''How do other people usually classify you in
+        this country? Would you say White, Black or African American,
+        Hispanic or Latino, Asian, Native Hawaiian or Other Pacific Islander,
+        American Indian or Alaska Native, or some other group?''',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='QSTLANG',
+        options={'English': '1', 'Spanish': '2'},
+        label='Language identifier',
+        question='Language spoken',
         validators=[DataRequired()]
     )
     ml_features[feat.id] = feat
@@ -470,8 +513,29 @@ def create_features() -> MLFeaturesMap:
     )
     ml_features[feat.id] = feat
 
+    feat = MLFeature(
+        id='VETERAN3',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Are You A Veteran',
+        question='''Have you ever served on active duty in the
+        United States Armed Forces, either in the regular military
+        or in a National Guard or military reserve unit?''',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
     # 5 Social Determinants of Health Section
     ########################################################################
+
+    feat = MLFeature(
+        id='MEDCOST1',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Could Not Afford To See Doctor',
+        question='''Was there a time in the past 12 months when you needed
+        to see a doctor but could not because you could not afford it?''',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
 
     feat = MLFeature(
         id='SDHBILLS',
@@ -556,8 +620,37 @@ def create_features() -> MLFeaturesMap:
     )
     ml_features[feat.id] = feat
 
+    feat = MLFeature(
+        id='FOODSTMP',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='''During the past 12 months have you received food stamps''',
+        question='''During the past 12 months, have you received food stamps,
+        also called SNAP, the Supplemental Nutrition Assistance
+        Program on an EBT card?''',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
     # 5. Chronic Conditions and Medical History Section
     #######################################################################
+
+    feat = MLFeature(
+        id='PREGNANT',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Pregnancy Status',
+        question='To your knowledge, are you now pregnant?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='ASTHNOW',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Still Have Asthma',
+        question='Do you still have asthma?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
 
     feat = MLFeature(
         id='HAVARTH4',
@@ -574,6 +667,25 @@ def create_features() -> MLFeaturesMap:
     ml_features[feat.id] = feat
 
     feat = MLFeature(
+        id='CHCSCNC1',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Skin cancer, not melanoma',
+        question='(Ever told) (you had) skin cancer that is not melanoma?',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='CHCOCNC1',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='Melanoma or other types of cancer',
+        question='''(Ever told) (you had) melanoma or any other
+        types of cancer?''',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
         id='DIABETE4',
         options={'Yes': '1', 'During Pregnancy': '2', 'No': '3',
                  'Pre-diabetes': '4',   'Not Sure': '7', 'Refused': '9'},
@@ -582,6 +694,17 @@ def create_features() -> MLFeaturesMap:
         'respondent is female, ask ´Was this only when you were '
         'pregnant?. If Respondent says pre-diabetes '
         'or borderline diabetes, use response code 4.)',
+        validators=[DataRequired()]
+    )
+    ml_features[feat.id] = feat
+
+    feat = MLFeature(
+        id='CHCCOPD3',
+        options={'Yes': '1', 'No': '2', 'Not Sure': '7', 'Refused': '9'},
+        label='C.O.P.D. emphysema or chronic bronchitis',
+        question='''(Ever told) (you had) C.O.P.D.
+        (chronic obstructive pulmonary disease),
+        emphysema or chronic bronchitis?''',
         validators=[DataRequired()]
     )
     ml_features[feat.id] = feat

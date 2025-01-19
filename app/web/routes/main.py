@@ -4,11 +4,10 @@ This module contains the main routes for the Flask app.
 Implements the home route for the application.
 Initializes the main blueprint for the application.
 """
-
 from datetime import datetime
 
 from flask import Blueprint, render_template, request
-from flask import redirect, flash
+from flask import flash
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from flask_login import current_user
@@ -63,11 +62,9 @@ def evaluation():
                 form=form
             )
 
-
     logger.debug(f'Evaluation request: addr: {request.remote_addr}')
     return render_template(
         'evaluation.html',
         current_user=current_user,
         form=form
     )
-

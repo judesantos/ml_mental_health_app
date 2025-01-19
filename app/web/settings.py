@@ -7,8 +7,6 @@ for the application. Configuration values are loaded from the .env file
 located in the root of the application execution path.
 """
 
-import os
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
 
@@ -58,7 +56,6 @@ class Settings(BaseSettings):
         """
         if isinstance(v, str):
             return eval(v)
-
 
 
 settings = Settings()

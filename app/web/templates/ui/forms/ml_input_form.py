@@ -11,7 +11,8 @@ Classes:
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 
-from web.templates.ui.ml_features import MLFeaturesMap, MLFeature, create_features
+from web.templates.ui.ml_features import MLFeaturesMap, MLFeature
+from web.templates.ui.ml_features import create_features
 
 
 class DescriptiveSelectField(SelectField):
@@ -69,16 +70,13 @@ class MlInputForm(FlaskForm):
 
     Attributes:
         # General Health Section
-
         poorhlth: The user's general health.
         physhlth: The user's physical health.
         genhlth: The user's general health.
         diffwalk: The user's difficulty walking.
         diffalon: The user's difficulty walking alone.
         checkup1: The user's checkup status.
-
         # Mental Health Section
-
         addepev3: The user's mental health.
         acedeprs: The user's depression.
         sdlonely: The user's loneliness.
@@ -86,34 +84,26 @@ class MlInputForm(FlaskForm):
         emtsuprt: The user's emotional support.
         decide: The user's decision making.
         cdsocia1: The user's socializing.
-
         # Lifestyle and Habits Section
-
         smokday2: The user's smoking habits.
         alcday4: The user's alcohol consumption.
         marijan1: The user's marijuana consumption.
         exeroft1: The user's exercise habits.
         usenow3: The user's drug use.
-
         # Socioeconomic Factors Section
-
         income3: The user's income status.
         educa: The user's education status.
         employ1: The user's employment status.
         marital: The user's marital status.
         state: The user's state.
-
         # Social Determinants of Health Section
-
         sdhbills: The user's ability to pay bills.
         sdhemple: The user's employment status.
         sdhfood1: The user's food security.
         sdhstre1: The user's stress levels.
         sdhutils: The user's utility payments.
         sdhtrnsp: The user's transportation.
-
         # Chronic Conditions and Medical History Section
-
         hvarth4: The user's heart health.
         diabete4: The user's diabetes status.
         cholchk3: The user's cholesterol check.
@@ -137,8 +127,9 @@ class MlInputForm(FlaskForm):
     diffwalk = build_form_item(ml_features['DIFFWALK'])
     diffalon = build_form_item(ml_features['DIFFALON'])
     checkup1 = build_form_item(ml_features['CHECKUP1'])
+    diffdres = build_form_item(ml_features['DIFFDRES'])
 
-    # Mental Health Section
+    # 2. Mental Health Section
     ######################################################################
 
     addepev3 = build_form_item(ml_features['ADDEPEV3'])
@@ -148,8 +139,10 @@ class MlInputForm(FlaskForm):
     emtsuprt = build_form_item(ml_features['EMTSUPRT'])
     decide = build_form_item(ml_features['DECIDE'])
     cdsocia1 = build_form_item(ml_features['CDSOCIA1'])
+    cddiscu1 = build_form_item(ml_features['CDDISCU1'])
+    cimemlo1 = build_form_item(ml_features['CIMEMLO1'])
 
-    # Lifestyle and Habits Section
+    # 3. Lifestyle and Habits Section
     #####################################################################
 
     smokday2 = build_form_item(ml_features['SMOKDAY2'])
@@ -157,19 +150,26 @@ class MlInputForm(FlaskForm):
     marijan1 = build_form_item(ml_features['MARIJAN1'])
     exeroft1 = build_form_item(ml_features['EXEROFT1'])
     usenow3 = build_form_item(ml_features['USENOW3'])
+    firearm5 = build_form_item(ml_features['FIREARM5'])
 
-    # Socioeconomic Factors Section
+    # 4. Socioeconomic Factors Section
     #####################################################################
 
     income3 = build_form_item(ml_features['INCOME3'])
     educa = build_form_item(ml_features['EDUCA'])
     employ1 = build_form_item(ml_features['EMPLOY1'])
+    sex = build_form_item(ml_features['SEX'])
     marital = build_form_item(ml_features['MARITAL'])
+    adult = build_form_item(ml_features['ADULT'])
+    rrclass3 = build_form_item(ml_features['RRCLASS3'])
+    qstlang = build_form_item(ml_features['QSTLANG'])
     state = build_form_item(ml_features['STATE'])
+    veteran3 = build_form_item(ml_features['VETERAN3'])
 
-    # Social Determinants of Health Section
+    # 5, Social Determinants of Health Section
     #####################################################################
 
+    medcost = build_form_item(ml_features['MEDCOST1'])
     sdhbills = build_form_item(ml_features['SDHBILLS'])
     sdhemple = build_form_item(ml_features['SDHEMPLY'])
     sdhfood1 = build_form_item(ml_features['SDHFOOD1'])
@@ -177,12 +177,18 @@ class MlInputForm(FlaskForm):
     sdhutils = build_form_item(ml_features['SDHUTILS'])
     sdhtrnsp = build_form_item(ml_features['SDHTRNSP'])
     cdshous1 = build_form_item(ml_features['CDHOUS1'])
+    foodstmp = build_form_item(ml_features['FOODSTMP'])
 
-    # Chronic Conditions and Medical History Section
+    # 6. Chronic Conditions and Medical History Section
     #####################################################################
 
+    pregnant = build_form_item(ml_features['PREGNANT'])
+    asthnow = build_form_item(ml_features['ASTHNOW'])
     hvarth4 = build_form_item(ml_features['HAVARTH4'])
+    chcscnc1 = build_form_item(ml_features['CHCSCNC1'])
+    chcocnc1 = build_form_item(ml_features['CHCOCNC1'])
     diabete4 = build_form_item(ml_features['DIABETE4'])
+    chccopd3 = build_form_item(ml_features['CHCCOPD3'])
     cholchk3 = build_form_item(ml_features['CHOLCHK3'])
     bpmeds1 = build_form_item(ml_features['BPMEDS1'])
     bphigh6 = build_form_item(ml_features['BPHIGH6'])

@@ -1,12 +1,12 @@
 
 build:
-	@python3 src/runner_builder.py
+	@python3 app/ml/runner_builder.py
 
 run:
-	@python3 src/runner_inference.py
+	@python3 app/ml/runner_inference.py
 
 check:
-	@flake8 src/ app/
+	@flake8 app/
 
 clean:
 	@rm -rf `find . -name __pycache__`

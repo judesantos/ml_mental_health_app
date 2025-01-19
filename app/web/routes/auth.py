@@ -165,7 +165,7 @@ def login():
 
         return response
 
-    logger.debug( f'Login request: addr: {request.remote_addr}')
+    logger.debug(f'Login request: addr: {request.remote_addr}')
     return render_template('login.html', form=form)
 
 
@@ -222,7 +222,8 @@ def signup():
                 if existing_user:
                     flash('Phone number exists.', 'error')
             if existing_user:
-                logger.warning(f'Registration error: User exists: {existing_user.id}')
+                logger.warning(f'Registration error: User exists: {
+                               existing_user.id}')
                 return redirect(url_for('auth.signup'))
 
             try:
@@ -249,10 +250,10 @@ def signup():
             flash('Unknown error, please try again.', 'danger')
             return redirect(url_for('auth.signup'))
 
-        logger.debug(f'User registered: addr: {request.remote_addr} uid: {new_user.id}')
+        logger.debug(f'User registered: addr: {
+                     request.remote_addr} uid: {new_user.id}')
         # Registration complete, redirect to login
         return redirect(url_for('auth.login'))
 
     logger.debug(f'Signup request: addr: {request.remote_addr}')
     return render_template('signup.html', form=form)
-

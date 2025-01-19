@@ -5,11 +5,13 @@ Classes:
     User: The User class defines the db user model.
 """
 
-from web.extensions import db
 import bcrypt
 
+from flask_login import UserMixin
+from web.extensions import db
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     """
     The User class defines the db user model provided
     for application access and security.

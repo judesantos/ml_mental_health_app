@@ -90,3 +90,5 @@ data/*
 !data/
 certs/*
 !certs/
+models/*
+!models/

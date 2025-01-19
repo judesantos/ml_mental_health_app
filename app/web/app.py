@@ -5,17 +5,18 @@
 import datetime
 
 from flask import url_for
-from flask import Flask, jsonify, request, redirect
+from flask import Flask, request, redirect
 from flask_talisman import Talisman
 from flask_login import current_user
 
 from web.routes import main, auth
 from web.settings import settings
-from web.extensions import db, jwt, limiter, oauth, csrf, login_manager
+from web.extensions import jwt, login_manager
 from web.models.user import User
 
 from loguru import logger
 from utils.config.logging import configure_logging
+
 
 def init_app_configs(app):
     """
@@ -42,7 +43,8 @@ def init_app_configs(app):
     app.config['JWT_COOKIE_SECURE'] = settings.JWT_COOKIE_SECURE
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_ACCESS_COOKIE_NAME'] = 'access_token'
-    app.config['JWT_COOKIE_CSRF_PROTECT'] = False # Disable CSRF protection for now
+    # Disable CSRF protection for now
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = False
     app.config['JWT_ACCESS_COOKIE_PATH'] = '/'
     app.config['JWT_COOKIE_SAMESITE'] = 'Strict'
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
@@ -56,6 +58,7 @@ def init_app_configs(app):
     app.config['MAX_CONTENT_LENGTH'] = settings.MAX_CONTENT_LENGTH
 
     app.debug = True
+
 
 def init_middleware_callbacks(app, failback_page='main.home'):
     """
