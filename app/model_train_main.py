@@ -6,22 +6,21 @@ The module contains the main function that runs the model training pipeline.
 """
 
 from ml.model.model_builder import ModelBuilderService
-from loguru import logger
 
 
-@logger.catch
 def main():
     """
     Run the model training pipeline.
 
     The function runs the model training pipeline to build and train the model.
     """
-
-    logger.info("Starting model builder application...")
+    print('Running model training...')
 
     # Create service
     svc = ModelBuilderService()
     svc.train_model()
+
+    print('Model training complete.')
 
 
 if __name__ == '__main__':

@@ -8,19 +8,10 @@ Classes:
     SurveyForm: A class used to create the survey form for the application.
 """
 
-import io
-import base64
-
-import matplotlib.pyplot as plt
-import matplotlib
-
-from loguru import logger
 from web.templates.ui.ml_features import create_features
 from web.templates.ui.ml_features import MLFeaturesMap, MLFeature
 from wtforms import SelectField, SubmitField
 from flask_wtf import FlaskForm
-
-matplotlib.use('Agg')  # Use non-interactive backend
 
 
 class DescriptiveSelectField(SelectField):
@@ -226,59 +217,3 @@ def process_form(form: MlInputForm) -> MlInputForm:
             )
 
     return form
-
-
-def prediction_report(probabilities: list) -> tuple[list, str]:
-    """
-    Generate a prediction report table and a chart URL.
-    Returns:
-        str: The prediction report.
-        str: The chart URL.
-    """
-
-    # 1. Convert probabilities to percentages
-    percentages = [p * 100 for p in probabilities]
-
-    # Define prediction classes
-    classes_dict = {0: '0 Days', 1: '1-13 Days', 2: '14+ Days', 3: 'Unsure'}
-
-    # 2. Prepare the data for the tabular presentation
-    dominant_prediction = max(percentages)
-    dominant_class = classes_dict[percentages.index(max(percentages))]
-    data = [
-        {
-            "id": "001",
-            "c0": f'{percentages[0]:.2f}',
-            "c1": f'{percentages[1]:.2f}',
-            "c2": f'{percentages[2]:.2f}',
-            "c3": f'{percentages[3]:.2f}',
-            "prediction": dominant_class
-        }
-    ]
-
-    # 3. Generate the chart
-
-    classes = classes_dict.values()
-
-    fig, ax = plt.subplots()
-    ax.bar(classes, probabilities)
-    ax.set_title("Prediction Probabilities")
-    ax.set_ylabel("Probability (%)")
-    ax.set_ylim(0, 100)
-    for i, p in enumerate(percentages):
-        ax.text(i, p + 2, f"{p:.2f}", color='grey', ha='center')
-    ax.bar(classes, percentages, color='grey', alpha=0.5)
-    ax.bar(dominant_class, dominant_prediction,
-           color='lightgreen', label='Predicted Class')
-
-    ax.legend()
-
-    # Save the chart as a PNG image in memory
-    img = io.BytesIO()
-    plt.savefig(img, format='png')
-    img.seek(0)
-    chart_url = base64.b64encode(img.getvalue()).decode()
-    img.close()
-
-    # 4. Return the data and chart URL
-    return data, chart_url

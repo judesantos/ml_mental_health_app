@@ -5,17 +5,22 @@ The module contains the ModelService class, which is responsible for loading
 a pre-trained model and making predictions.
 """
 
-import pandas as pd
-import xgboost as xgb
-
+import io
+import base64
 from typing import List, Dict
-
 from pathlib import Path
 import pickle as pk
 from loguru import logger
 
+import matplotlib.pyplot as plt
+import matplotlib
+import pandas as pd
+import xgboost as xgb
+
 from ml.config.model import model_settings as settings
 from ml.model.pipeline.preparation import MentalHealthData
+
+matplotlib.use('Agg')  # Use non-interactive backend
 
 FEATURE_NAMES = [
     'POORHLTH', 'PHYSHLTH', 'GENHLTH', 'DIFFWALK', 'DIFFALON',
@@ -153,3 +158,62 @@ class ModelInferenceService:
 
         logger.debug(f'Ordered batch: {ordered_batch}')
         return ordered_batch
+
+
+def prediction_report(probabilities: list, plot=True) -> tuple[list, str]:
+    """
+    Generate a prediction report table and a chart URL.
+    Returns:
+        str: The prediction report.
+        str: The chart URL.
+    """
+
+    # 1. Convert probabilities to percentages
+    percentages = [p * 100 for p in probabilities]
+
+    # Define prediction classes
+    classes_dict = {0: '0 Days', 1: '1-13 Days', 2: '14+ Days', 3: 'Unsure'}
+
+    # 2. Prepare the data for the tabular presentation
+    dominant_prediction = max(percentages)
+    dominant_class = classes_dict[percentages.index(max(percentages))]
+    data = [
+        {
+            "id": "001",
+            "c0": f'{percentages[0]:.2f}',
+            "c1": f'{percentages[1]:.2f}',
+            "c2": f'{percentages[2]:.2f}',
+            "c3": f'{percentages[3]:.2f}',
+            "prediction": dominant_class
+        }
+    ]
+
+    chart_url = None
+
+    if plot:
+        # 3. Generate the chart
+
+        classes = classes_dict.values()
+
+        fig, ax = plt.subplots()
+        ax.bar(classes, probabilities)
+        ax.set_title("Prediction Probabilities")
+        ax.set_ylabel("Probability (%)")
+        ax.set_ylim(0, 100)
+        for i, p in enumerate(percentages):
+            ax.text(i, p + 2, f"{p:.2f}", color='grey', ha='center')
+        ax.bar(classes, percentages, color='grey', alpha=0.5)
+        ax.bar(dominant_class, dominant_prediction,
+               color='lightgreen', label='Predicted Class')
+
+        ax.legend()
+
+        # Save the chart as a PNG image in memory
+        img = io.BytesIO()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        chart_url = base64.b64encode(img.getvalue()).decode()
+        img.close()
+
+    # 4. Return the data and chart URL
+    return data, chart_url

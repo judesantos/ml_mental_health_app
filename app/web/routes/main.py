@@ -18,10 +18,10 @@ from web.extensions import limiter
 from web.models.mental_health_inference import MentalHealthDbInferenceModel
 from web.extensions import db
 
-from web.templates.ui.forms.ml_input_form import MlInputForm, prediction_report
+from web.templates.ui.forms.ml_input_form import MlInputForm
 from web.templates.ui.forms.ml_input_form import process_form
 
-from ml.model.model_inference import ModelInferenceService
+from ml.model.model_inference import ModelInferenceService, prediction_report
 from web.models.user_inference_log import UserInferenceLog
 
 from web.extensions import cache_get, cache_push
@@ -76,10 +76,10 @@ def evaluation():
 
         try:
             # 1. Run inference on this request
-            model_builder = ModelInferenceService()
+            model_inference = ModelInferenceService()
             logger.debug(f'Running model inference...')
 
-            predictions = model_builder.predict([form.data])
+            predictions = model_inference.predict([form.data])
             logger.info(f'Prediction resuls: {predictions}')
 
             # 2. Generate the report data and chart
