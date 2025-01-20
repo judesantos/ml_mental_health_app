@@ -4,14 +4,14 @@
 
 import datetime
 
-from flask import url_for
+from flask import url_for, jsonify
 from flask import Flask, request, redirect
 from flask_talisman import Talisman
 from flask_login import current_user
 
 from web.routes import main, auth
 from web.settings import settings
-from web.extensions import jwt, login_manager
+from web.extensions import jwt, login_manager, limiter
 from web.models.user import User
 
 from loguru import logger
@@ -60,7 +60,7 @@ def init_app_configs(app):
     app.debug = True
 
 
-def init_middleware_callbacks(app, failback_page='auth.logoue'):
+def init_middleware_callbacks(app, failback_page='auth.home'):
     """
     Initialize the application middleware callbacks.
 
@@ -98,11 +98,15 @@ def init_middleware_callbacks(app, failback_page='auth.logoue'):
             return redirect(request.url.replace("http://", "https://"))
 
     @app.route('/debug')
+    @limiter.limit("100 per minute")
     def debug():
         if current_user.is_authenticated:
-            print(f'Current user: {current_user}')
+            user_info = f'Current user: {current_user}'
+            logger.debug(f'/debug: User is authenticated: {user_info}')
+            return jsonify({"message": "User is authenticated", "user": str(current_user)}), 200
         else:
-            print('No current user')
+            logger.debug(f'/debug: No user is authenticated')
+            return jsonify({"message": "No user is currently authenticated"}), 200
 
 
 def create_app(db, jwt, limiter, oauth, csrf):

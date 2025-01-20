@@ -53,9 +53,6 @@ class ModelSettings(BaseSettings):
                     if line.strip() and not line.strip().startswith("#"):
                         key, _, value = line.partition("=")
                         env_variables[key.strip()] = value.strip()
-                        # Update the in-memory dictionary with new values
-                        if hasattr(self, key.strip()):
-                            setattr(self, key.strip(), updates[key])
 
         # Update the dictionary with new values
         env_variables.update(updates)
@@ -64,9 +61,6 @@ class ModelSettings(BaseSettings):
         with open(env_file_path, "w") as file:
             for key, value in env_variables.items():
                 file.write(f"{key}={value}\n")
-
-        logger.info(f"Updated .env file at: {env_file_path}")
-        logger.info(f'Updates: {updates}')
 
 
 model_settings = ModelSettings()

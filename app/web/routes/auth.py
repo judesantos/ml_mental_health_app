@@ -150,7 +150,7 @@ def login():
 
         # Login successful, redirect to the dashboard
         login_user(user)
-        response = redirect(url_for('main.evaluation'))
+        response = redirect(url_for('main.home'))
 
         # Set session cookie credentials,
         # otherwise the authenticated access to the resource we're
