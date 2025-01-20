@@ -228,7 +228,7 @@ def process_form(form: MlInputForm) -> MlInputForm:
     return form
 
 
-def prediction_report(probabilities: list) -> tuple[str, str]:
+def prediction_report(probabilities: list) -> tuple[list, str]:
     """
     Generate a prediction report table and a chart URL.
     Returns:

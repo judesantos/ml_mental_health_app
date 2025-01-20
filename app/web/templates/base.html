@@ -20,7 +20,9 @@
             <div class="menu right-menu">
                 <ul>
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                        {% if request.endpoint != 'main.home' %}
+                            <li><a href="{{ url_for('main.home') }}">Home</a></li>
+                        {% endif %}
                         {% if request.endpoint != 'main.evaluation' %}
                             <li><a href="{{ url_for('main.evaluation') }}">Evaluation</a></li>
                         {% endif %}

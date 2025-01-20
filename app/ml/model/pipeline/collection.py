@@ -11,7 +11,7 @@ from loguru import logger
 
 from ml.config import db
 
-from ml.db.mental_health import MentalHealthDbModel
+from web.models.mental_health import MentalHealthDbModel
 from sqlalchemy import select
 
 

@@ -30,7 +30,7 @@ FEATURE_NAMES = [
     'CHOLMED3'
 ]
 
-EXPTECTED_FEATURE_ORDER = [
+EXPECTED_FEATURE_ORDER = [
     'poorhlth', 'physhlth', 'genhlth', 'diffwalk', 'diffalon',
     'checkup1', 'diffdres', 'addepev3', 'acedeprs', 'sdlonely', 'lsatisfy',
     'emtsuprt', 'decide', 'cdsocia1', 'cddiscu1', 'cimemlo1', 'smokday2',
@@ -91,7 +91,7 @@ class ModelInferenceService:
         except Exception as e:
             logger.error(f'Error loading model: {e}')
 
-    def predict(self, batch: List[Dict[str, int]]):
+    def predict(self, batch: List[Dict[str, str]]):
         """
         Make a prediction using the pre-trained model
 
@@ -113,8 +113,9 @@ class ModelInferenceService:
 
         # Prepare our inference data
         # MentalHealthData can process both feature with target data,
-        # or just feature data
-        # In this case, we are only interested in the feature data
+        # or just feature data, including composite features
+        # In this case, we are only interested in the feature and composite
+        # data
         mh = MentalHealthData(batch_df)
 
         # XGb expects data in DMatrix format
@@ -123,7 +124,7 @@ class ModelInferenceService:
         # Make predictions
         return self.model.predict(xgb_features)
 
-    def _reorder_features(self, batch: List[Dict[str, int]]):
+    def _reorder_features(self, batch: List[Dict[str, str]]):
         """
         Reorder input data to match the expected feature order.
         The submitted batch data is expected to be without missing values
@@ -145,9 +146,9 @@ class ModelInferenceService:
         ordered_batch = []
 
         for features in batch:
-            _features = [int(features[feature])
-                         for feature in EXPTECTED_FEATURE_ORDER]
-            # Append the ordered feature values to the batch
+            _features = [int(features[feature]) for feature in
+                         EXPECTED_FEATURE_ORDER if feature in features]
+           # Append the ordered feature values to the batch
             ordered_batch.append(_features)
 
         logger.debug(f'Ordered batch: {ordered_batch}')

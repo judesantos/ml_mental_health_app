@@ -48,3 +48,10 @@ class User(db.Model, UserMixin):
             self.password.encode('utf-8')
         )
         return password_good
+
+     # Relationships
+    logs = db.relationship(
+        'UserInferenceLog',
+        back_populates='user',
+        cascade='all, delete-orphan'
+    )
