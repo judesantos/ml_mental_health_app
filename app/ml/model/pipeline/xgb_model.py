@@ -12,6 +12,9 @@ then the model is trained using the training set and evaluated using
 the validation set. The model with the lowest log-loss is selected as
 the best model and evaluated using the test set.
 """
+
+import os
+
 import time
 from datetime import datetime
 import humanfriendly
@@ -29,8 +32,8 @@ from sklearn.metrics import accuracy_score, precision_score
 from sklearn.metrics import recall_score, f1_score
 
 
-from config import model_settings as settings
-from model.pipeline.preparation import get_mental_health_data, MentalHealthData
+from ml.config import model_settings as settings
+from ml.model.pipeline.preparation import get_mental_health_data, MentalHealthData
 
 
 """
@@ -84,6 +87,8 @@ def build_model():
         stratify=y,
         test_size=0.4
     )
+
+    logger.debug(f'Model features: {X_train.columns}')
 
     # split once more for the validation and test sets
     x_val, x_test, y_val, y_test = train_test_split(
@@ -359,31 +364,56 @@ def _save_model(model):
     Save model to disk. The function saves the trained model
     to the specified path using pickle.
 
+    The model filename will be in the format: 'model_name_YYYYMMDDHHMMSS.pkl'
+    - with the postfixed build timestamp, to serve as its unique version
+    identifier.
+
+    The environment variable responsible for disseminating the correct
+    model file to deploy for the inference  service will dynamically
+    update. This operation updates the in-memory setting, as well as
+    the environment file on disk.
+
     Args:
       model: (object) trained model
     """
 
-    model_fname = f'{settings.model_path}/{settings.model_name}'
-    # Add a timestamp suffix to the file name
+    # Begin: Saving model to disk
+
+    # 1. Get the current deployed model name
+
+    model_path = settings.model_path
+    model_fname = settings.model_name
+
+    # 2. Prepare the timestamp suffix for the model filename
+
     date_suffix = datetime.now().strftime('%Y%m%d%H%M%S')
 
-    # Check if the model_fname has an extension and add/update it
-    if '.' in model_fname:
-        base_name, ext = model_fname.rsplit('.', 1)
-        model_name = f"{base_name}_{date_suffix}.{ext}"
-    else:
-        # Default to .pkl if no extension is present
-        model_name = f'{model_fname}_{date_suffix}.pkl'
+    # 3. Split the current filename to remove the old timestamp and
 
-    # Save model to file
-    logger.debug(f'Saving model to {model_name}')
-    with open(model_name, 'wb') as f:
+    # reuse the base filename
+    base, ext = os.path.splitext(model_fname)
+
+    # Find the last underscore in the base
+    if "_" in base:
+        base_name, _ = base.rsplit("_", 1)
+        model_fname = base_name
+
+    # 4. Build the new model filename
+
+    model_fname = f'{model_fname}_{date_suffix}.pkl'
+    # Set the new model path and filename
+    model_pname = f'{model_path}/{model_fname}'
+
+    # 5. Save model into the deployment path
+
+    logger.debug(f'Saving model to {model_pname}')
+    with open(model_pname, 'wb') as f:
         # Serialize the model
         pkl.dump(model, f)
 
-    # We need to update the environment variable to let the
-    # inference service know of the latest model
-    settings.update({'MODEL_DEPLOYED': model_name})
+    # 6. Update the deployed model name in the settings
+
+    settings.update({'MODEL_NAME': model_fname})
 
 
 def _get_elapsed(start, end):

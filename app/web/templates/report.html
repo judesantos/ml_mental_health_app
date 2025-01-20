@@ -6,7 +6,7 @@
         <div class="survey-header">
             <div class="row mb-12">
                 <div class="col-md-10">
-                    <h1>Mental Health Assessment Report</h1>
+                    <h1>I. Mental Health Assessment Report</h1>
                 </div>
                 <div class="col-md-2 align-items-right">
                     <button onclick="window.print()" class="btn btn-primary print-btn">
@@ -14,13 +14,62 @@
                     </button>
                 </div>
             </div>
-            <p>Here are your assessment results</p>
+        </div>
+        <div class="survey-content">
+            <div class="row mb-4 report-data">
+                <!-- Table -->
+                <table> <thead> <tr>
+                    <th>Input</th>
+                    <th>0 Days</th>
+                    <th>1-13 Days</th>
+                    <th>14+ Days</th>
+                    <th>Unsure</th>
+                    <th>Prediction</th>
+                </tr> </thead> <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.c0 }}%</td>
+                    <td>{{ row.c1 }}%</td>
+                    <td>{{ row.c2 }}%</td>
+                    <td>{{ row.c3 }}%</td>
+                    <td class="highlight">{{ row.prediction }}</td>
+                </tr>
+                {% endfor %}
+                </tbody> </table>
+                <!-- Chart -->
+                <img src="data:image/png;base64,{{ chart_url }}"
+                    alt="Prediction Chart">
+            </div>
         </div>
 
+        <div class="survey-header">
+            <div class="row mb-12">
+                <div class="col-md-10">
+                    <h1>2. Evaluation Questionaire</h1>
+                </div>
+            </div>
+        </div>
         <div class="survey-content">
+            <!-- Header -->
+            <div class="survey-section">
+                <div class="report-grid">
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-3">
+                            <h4><ul><u>Label</u></ul></h4>
+                        </div>
+                        <div class="col-md-6">
+                            <h4><ul><u>Question</u></ul></h4>
+                        </div>
+                        <div class="col-md-3 answer">
+                            <h4><ul><u>Answer</u></ul></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- General Health Section -->
             <div class="survey-section">
-                <h2>1. General Health</h2>
+                <h3>1. General Health</h3>
                 <div class="report-grid">
                     {% for field in [form.poorhlth, form.physhlth, form.genhlth,
                             form.diffwalk, form.diffalon, form.checkup1] %}
@@ -41,7 +90,7 @@
 
             <!-- Mental Health Section -->
             <div class="survey-section">
-                <h2>2. Mental Health</h2>
+                <h3>2. Mental Health</h3>
                 <div class="report-grid">
                     {% for field in [form.addepev3, form.acedeprs, form.sdlonely,
                             form.lsatisfy, form.emtsuprt, form.decide, form.cdsocia1] %}
@@ -62,7 +111,7 @@
 
             <!-- Lifestyle and Habits Section -->
             <div class="survey-section">
-                <h2>3. Lifestyle and Habits</h2>
+                <h3>3. Lifestyle and Habits</h3>
                 <div class="report-grid">
                     {% for field in [form.smokday2, form.alcday4, form.marijan1, form.exeroft1, form.usenow3] %}
                         <div class="row mb-3 align-items-center">
@@ -82,9 +131,9 @@
 
             <!-- Socioeconomic Factors Section -->
             <div class="survey-section">
-                <h2>4. Socioeconomic Factors</h2>
+                <h3>4. Socioeconomic Factors</h3>
                 <div class="report-grid">
-                    {% for field in [form.hvarth4, form.diabete4, form.cholchk3, form.bpmeds1,
+                    {% for field in [form.havarth4, form.diabete4, form.cholchk3, form.bpmeds1,
                             form.bphigh6, form.cvdstrk3, form.cvdcrhd4, form.chckdny2, form.cholmed3] %}
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-3">
@@ -103,10 +152,10 @@
 
             <!-- Social Determinants of Health -->
             <div class="survey-section">
-                <h2>5. Social Determinants of Health</h2>
+                <h3>5. Social Determinants of Health</h3>
                 <div class="report-grid">
-                        {% for field in [form.medcost, form.sdhbills, form.sdhemple, form.sdhfood1,
-                            form.sdhstre1, form.sdhutils, form.sdhtrnsp, form.cdshous1, form.foodstmp] %}
+                        {% for field in [form.medcost1, form.sdhbills, form.sdhemply, form.sdhfood1,
+                            form.sdhstre1, form.sdhutils, form.sdhtrnsp, form.cdhous1, form.foodstmp] %}
                         <div class="row mb-3 align-items-center">
                             <div class="col-md-3">
                                 <label class="form-label">{{ field.label.text }}</label>
@@ -124,9 +173,9 @@
 
             <!-- Chronic Conditions and Medical History -->
             <div class="survey-section">
-                <h2>6. Chronic Conditions and Medical History</h2>
+                <h3>6. Chronic Conditions and Medical History</h3>
                 <div class="report-grid">
-                    {% for field in [form.hvarth4, form.diabete4, form.cholchk3,
+                    {% for field in [form.havarth4, form.diabete4, form.cholchk3,
                             form.bpmeds1, form.bphigh6, form.cvdstrk3, form.cvdcrhd4,
                                 form.chckdny2, form.cholmed3] %}
                         <div class="row mb-3 align-items-center">

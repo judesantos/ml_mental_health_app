@@ -15,7 +15,7 @@ from web.extensions import jwt, login_manager
 from web.models.user import User
 
 from loguru import logger
-from utils.config.logging import configure_logging
+from ml.config.logging import configure_logging
 
 
 def init_app_configs(app):
@@ -60,7 +60,7 @@ def init_app_configs(app):
     app.debug = True
 
 
-def init_middleware_callbacks(app, failback_page='main.home'):
+def init_middleware_callbacks(app, failback_page='auth.logoue'):
     """
     Initialize the application middleware callbacks.
 

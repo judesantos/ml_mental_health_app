@@ -8,11 +8,19 @@ Classes:
     SurveyForm: A class used to create the survey form for the application.
 """
 
-from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField
+import io
+import base64
 
-from web.templates.ui.ml_features import MLFeaturesMap, MLFeature
+import matplotlib.pyplot as plt
+import matplotlib
+
+from loguru import logger
 from web.templates.ui.ml_features import create_features
+from web.templates.ui.ml_features import MLFeaturesMap, MLFeature
+from wtforms import SelectField, SubmitField
+from flask_wtf import FlaskForm
+
+matplotlib.use('Agg')  # Use non-interactive backend
 
 
 class DescriptiveSelectField(SelectField):
@@ -98,13 +106,13 @@ class MlInputForm(FlaskForm):
         state: The user's state.
         # Social Determinants of Health Section
         sdhbills: The user's ability to pay bills.
-        sdhemple: The user's employment status.
+        sdhemply: The user's employment status.
         sdhfood1: The user's food security.
         sdhstre1: The user's stress levels.
         sdhutils: The user's utility payments.
         sdhtrnsp: The user's transportation.
         # Chronic Conditions and Medical History Section
-        hvarth4: The user's heart health.
+        havarth4: The user's heart health.
         diabete4: The user's diabetes status.
         cholchk3: The user's cholesterol check.
         bpmeds1: The user's blood pressure medication.
@@ -169,14 +177,14 @@ class MlInputForm(FlaskForm):
     # 5, Social Determinants of Health Section
     #####################################################################
 
-    medcost = build_form_item(ml_features['MEDCOST1'])
+    medcost1 = build_form_item(ml_features['MEDCOST1'])
     sdhbills = build_form_item(ml_features['SDHBILLS'])
-    sdhemple = build_form_item(ml_features['SDHEMPLY'])
+    sdhemply = build_form_item(ml_features['SDHEMPLY'])
     sdhfood1 = build_form_item(ml_features['SDHFOOD1'])
     sdhstre1 = build_form_item(ml_features['SDHSTRE1'])
     sdhutils = build_form_item(ml_features['SDHUTILS'])
     sdhtrnsp = build_form_item(ml_features['SDHTRNSP'])
-    cdshous1 = build_form_item(ml_features['CDHOUS1'])
+    cdhous1 = build_form_item(ml_features['CDHOUS1'])
     foodstmp = build_form_item(ml_features['FOODSTMP'])
 
     # 6. Chronic Conditions and Medical History Section
@@ -184,7 +192,7 @@ class MlInputForm(FlaskForm):
 
     pregnant = build_form_item(ml_features['PREGNANT'])
     asthnow = build_form_item(ml_features['ASTHNOW'])
-    hvarth4 = build_form_item(ml_features['HAVARTH4'])
+    havarth4 = build_form_item(ml_features['HAVARTH4'])
     chcscnc1 = build_form_item(ml_features['CHCSCNC1'])
     chcocnc1 = build_form_item(ml_features['CHCOCNC1'])
     diabete4 = build_form_item(ml_features['DIABETE4'])
@@ -201,7 +209,7 @@ class MlInputForm(FlaskForm):
     submit_button = SubmitField('Submit')
 
 
-def process_form(form: MlInputForm):
+def process_form(form: MlInputForm) -> MlInputForm:
     """
     ML Input Form post processing function.
     Process validation and data from the form.
@@ -217,4 +225,60 @@ def process_form(form: MlInputForm):
                 None
             )
 
-    return True
+    return form
+
+
+def prediction_report(probabilities: list) -> tuple[str, str]:
+    """
+    Generate a prediction report table and a chart URL.
+    Returns:
+        str: The prediction report.
+        str: The chart URL.
+    """
+
+    # 1. Convert probabilities to percentages
+    percentages = [p * 100 for p in probabilities]
+
+    # Define prediction classes
+    classes_dict = {0: '0 Days', 1: '1-13 Days', 2: '14+ Days', 3: 'Unsure'}
+
+    # 2. Prepare the data for the tabular presentation
+    dominant_prediction = max(percentages)
+    dominant_class = classes_dict[percentages.index(max(percentages))]
+    data = [
+        {
+            "id": "001",
+            "c0": f'{percentages[0]:.2f}',
+            "c1": f'{percentages[1]:.2f}',
+            "c2": f'{percentages[2]:.2f}',
+            "c3": f'{percentages[3]:.2f}',
+            "prediction": dominant_class
+        }
+    ]
+
+    # 3. Generate the chart
+
+    classes = classes_dict.values()
+
+    fig, ax = plt.subplots()
+    ax.bar(classes, probabilities)
+    ax.set_title("Prediction Probabilities")
+    ax.set_ylabel("Probability (%)")
+    ax.set_ylim(0, 100)
+    for i, p in enumerate(percentages):
+        ax.text(i, p + 2, f"{p:.2f}", color='grey', ha='center')
+    ax.bar(classes, percentages, color='grey', alpha=0.5)
+    ax.bar(dominant_class, dominant_prediction,
+           color='lightgreen', label='Predicted Class')
+
+    ax.legend()
+
+    # Save the chart as a PNG image in memory
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    chart_url = base64.b64encode(img.getvalue()).decode()
+    img.close()
+
+    # 4. Return the data and chart URL
+    return data, chart_url

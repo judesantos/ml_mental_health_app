@@ -171,7 +171,7 @@ def login():
 
 @bp.route('/logout', methods=['get'])
 @limiter.limit("100 per minute")
-@jwt_required()
+# @jwt_required()
 def logout():
     """
     Logout the currently authenticated user.

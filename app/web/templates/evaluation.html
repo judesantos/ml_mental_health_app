@@ -4,6 +4,7 @@
 <div class="container mt-4">
     <div class="survey-header">
         <h1>Mental Health Assessment</h1>
+        Please
     </div>
     <form method="POST" action="{{ url_for('main.evaluation') }}">
         {{ form.hidden_tag() }}
@@ -158,8 +159,8 @@
                 <div id="socioEconomic" class="accordion-collapse collapse" aria-labelledby="frmsec-socd-hlth"
                         data-bs-parent="#frm-section-acc">
                     <div class="accordion-body">
-                        {% for field in [form.medcost, form.sdhbills, form.sdhemple, form.sdhfood1,
-                            form.sdhstre1, form.sdhutils, form.sdhtrnsp, form.cdshous1, form.foodstmp] %}
+                        {% for field in [form.medcost1, form.sdhbills, form.sdhemply, form.sdhfood1,
+                            form.sdhstre1, form.sdhutils, form.sdhtrnsp, form.cdhous1, form.foodstmp] %}
                             <div class="row mb-3 align-items-center">
                                 <div class="col-md-3">
                                     <label class="form-label">{{ field.label.text }}</label>
@@ -194,7 +195,7 @@
                 </h4>
                 <div id="medicalHistory" class="accordion-collapse collapse" aria-labelledby="frmsec-medh-hlth" data-bs-parent="#frm-section-acc">
                     <div class="accordion-body">
-                        {% for field in [form.pregnant, form.asthnow, form.hvarth4, form.chcscnc1, form.chcocnc1,
+                        {% for field in [form.pregnant, form.asthnow, form.havarth4, form.chcscnc1, form.chcocnc1,
                             form.diabete4, form.chccopd3, form.cholchk3, form.bpmeds1, form.bphigh6, form.cvdstrk3,
                             form.cvdcrhd4, form.chckdny2, form.cholmed3] %}
                             <div class="row mb-3 align-items-center">

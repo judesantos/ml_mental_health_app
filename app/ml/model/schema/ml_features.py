@@ -5,9 +5,6 @@ class MlModelFeatures(BaseModel):
     """
     This class defines the schema for the CDC data model features.
     """
-
-    __tablename__ = 'cdc_data'
-
     # General Health Section listed according to its unique id:
     poorhlth: int
     physhlth: int
@@ -64,7 +61,7 @@ class MlModelFeatures(BaseModel):
     chccopd3: int
     cholchk3: int
     bpmeds1: int
-    bphigh6j: int
+    bphigh6: int
     cvdstrk3: int
     cvdcrhd4: int
     chckdny2: int

@@ -35,7 +35,6 @@ class ModelSettings(BaseSettings):
     # ML Model settings
     model_path: DirectoryPath
     model_name: str  # The mode base name
-    model_deployed: str  # The deployed model name
 
     def update(self, updates: dict):
         """

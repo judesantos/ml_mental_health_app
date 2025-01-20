@@ -9,9 +9,9 @@ The module contains the following functions:
 import pandas as pd
 from loguru import logger
 
-from config import db
+from ml.config import db
 
-from db.mental_health import MentalHealthDbModel
+from ml.db.mental_health import MentalHealthDbModel
 from sqlalchemy import select
 
 

@@ -7,8 +7,8 @@ a pre-trained model and making predictions.
 
 from loguru import logger
 
-from model.pipeline.xgb_model import build_model
-from config import model_settings as settings
+from ml.model.pipeline.xgb_model import build_model
+from ml.config import model_settings as settings
 
 
 class ModelBuilderService:

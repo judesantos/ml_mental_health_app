@@ -9,7 +9,7 @@ The module contains the following functions:
 """
 
 from loguru import logger
-from model.pipeline.collection import load_data_from_db
+from ml.model.pipeline.collection import load_data_from_db
 
 
 class MentalHealthData():
@@ -31,15 +31,18 @@ class MentalHealthData():
           - Define the dataset characteristics
         """
 
-        # Reference the dataset
-        self._df = df
+        # 1. Make a copy of the dataset
+        self._df = df.copy()
 
-        # Define the target variable
+        # Integrate composite features
+        self._integrate_composite_features()
+
+        # 2. Define the target variable
         self.target = '_MENT14D'
 
         # Define the feature groups
 
-        # 1. Numeric features need scaler
+        # 3. Numeric features need scaler
         continuous_features = ['PHYSHLTH', 'POORHLTH', 'MARIJAN1']
         aggregated_features = [
             'Mental_Health_Composite',
@@ -48,7 +51,7 @@ class MentalHealthData():
         ]
         non_categorical_features = continuous_features + aggregated_features
 
-        # 2. Categorical features
+        # 4. Categorical features
         self.categorical_features = [
             col for col in self._df.columns
             if col not in (non_categorical_features + [self.target])
@@ -63,6 +66,19 @@ class MentalHealthData():
         """
         return self._df
 
+    def _integrate_composite_features(self):
+        # Create a new copy of the cleaned dataset
+        mental_health_features = ['EMTSUPRT', 'ADDEPEV3', 'POORHLTH']
+        # Using Nonlinear interaction
+        self._df['Physical_Mental_Interaction'] = self._df['GENHLTH'].astype(
+            int) * self._df['PHYSHLTH']
+        # Income and Education Interaction
+        self._df['Income_Education_Interaction'] = self._df['INCOME3'].astype(
+            int) * self._df['EDUCA'].astype(int)
+        # Mental Health
+        self._df['Mental_Health_Composite'] = self._df[mental_health_features].mean(
+            axis=1)
+
 
 def _prepare_df():
     """
@@ -73,27 +89,12 @@ def _prepare_df():
     """
     # Load dataset from collection
     df = load_data_from_db()
+    # Remove the column id
+    df.drop('id', axis=1, inplace=True)
 
     logger.debug('Loaded data from db successfully.')
 
-    return _integrate_composite_features(df)
-
-
-def _integrate_composite_features(df):
-    # Create a new copy of the cleaned dataset
-    _df = df.copy()
-
-    mental_health_features = ['EMTSUPRT', 'ADDEPEV3', 'POORHLTH']
-    # Using Nonlinear interaction
-    _df['Physical_Mental_Interaction'] = _df['GENHLTH'].astype(
-        int) * _df['PHYSHLTH']
-    # Income and Education Interaction
-    _df['Income_Education_Interaction'] = _df['INCOME3'].astype(
-        int) * _df['EDUCA'].astype(int)
-    # Mental Health
-    _df['Mental_Health_Composite'] = _df[mental_health_features].mean(axis=1)
-
-    return _df
+    return df
 
 
 def get_mental_health_data() -> MentalHealthData:

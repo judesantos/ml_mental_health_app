@@ -19,7 +19,6 @@ def main():
     logger.info('Running model prediction...')
     # Create service
     svc = ModelInferenceService()
-    svc.load_model()
 
     # Build test data DF
     columns = [
