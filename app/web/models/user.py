@@ -49,7 +49,7 @@ class User(db.Model, UserMixin):
         )
         return password_good
 
-     # Relationships
+    # Relationships
     logs = db.relationship(
         'UserInferenceLog',
         back_populates='user',

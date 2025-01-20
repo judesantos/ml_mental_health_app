@@ -12,7 +12,7 @@ from pydantic import Field
 import sys
 from loguru import logger
 
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 
 
 # 1. Configuration Db settings

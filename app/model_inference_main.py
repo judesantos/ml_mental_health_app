@@ -7,11 +7,10 @@ predictions.
 
 import sys
 
-import pandas as pd
 import argparse
 import json
 
-from ml.model.model_inference import ModelInferenceService, prediction_report
+from ml.model.model_inference import ModelInferenceService
 from ml.model.model_inference import EXPECTED_FEATURE_ORDER
 
 
@@ -29,7 +28,8 @@ def process_args():
     """
 
     parser = argparse.ArgumentParser(
-        description="Enter inference data. Expects 55 integer items in you input list."
+        description='''Enter inference data. Expects 55 integer
+        items in you input list.'''
     )
 
     parser.add_argument(

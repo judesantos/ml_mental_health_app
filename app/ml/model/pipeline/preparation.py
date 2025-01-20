@@ -76,8 +76,9 @@ class MentalHealthData():
         self._df['Income_Education_Interaction'] = self._df['INCOME3'].astype(
             int) * self._df['EDUCA'].astype(int)
         # Mental Health
-        self._df['Mental_Health_Composite'] = self._df[mental_health_features].mean(
-            axis=1)
+        self._df['Mental_Health_Composite'] = self._df[
+            mental_health_features
+        ].mean(axis=1)
 
 
 def _prepare_df():

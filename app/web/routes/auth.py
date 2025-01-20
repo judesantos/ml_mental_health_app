@@ -14,7 +14,7 @@ Entry points:
 
 from flask import Blueprint, request, jsonify, url_for, flash
 from flask import session, redirect, render_template
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token  # , jwt_required
 from flask_jwt_extended import unset_jwt_cookies, set_access_cookies
 from flask_login import login_user, logout_user
 

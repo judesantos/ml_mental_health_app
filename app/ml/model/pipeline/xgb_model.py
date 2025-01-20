@@ -33,7 +33,8 @@ from sklearn.metrics import recall_score, f1_score
 
 
 from ml.config import model_settings as settings
-from ml.model.pipeline.preparation import get_mental_health_data, MentalHealthData
+from ml.model.pipeline.preparation import get_mental_health_data
+from ml.model.pipeline.preparation import MentalHealthData
 
 
 """

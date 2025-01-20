@@ -2,7 +2,6 @@
 This module contains the UserInferenceLog model which is used
 to store the logs of the user's inference inputs.
 """
-from sqlalchemy import Integer, Column
 from web.extensions import db
 
 

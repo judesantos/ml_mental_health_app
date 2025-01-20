@@ -103,10 +103,15 @@ def init_middleware_callbacks(app, failback_page='auth.home'):
         if current_user.is_authenticated:
             user_info = f'Current user: {current_user}'
             logger.debug(f'/debug: User is authenticated: {user_info}')
-            return jsonify({"message": "User is authenticated", "user": str(current_user)}), 200
+            return jsonify(
+                {"message": "User is authenticated",
+                 "user": str(current_user)}
+            ), 200
         else:
-            logger.debug(f'/debug: No user is authenticated')
-            return jsonify({"message": "No user is currently authenticated"}), 200
+            logger.debug('/debug: No user is authenticated')
+            return jsonify(
+                {"message": "No user is currently authenticated"}
+            ), 200
 
 
 def create_app(db, jwt, limiter, oauth, csrf):

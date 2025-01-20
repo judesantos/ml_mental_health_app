@@ -25,8 +25,7 @@ Properties:
 
 import uuid
 # TODO: Use redis for caching in production
-from cachetools import TTLCache, cached
-from cachetools.keys import hashkey
+from cachetools import TTLCache
 
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter

@@ -1,6 +1,5 @@
-from sqlalchemy import Integer, Column
+from sqlalchemy import Integer
 from web.extensions import db
-from web.models.user_inference_log import UserInferenceLog
 
 
 class MentalHealthDbInferenceModel(db.Model):

@@ -153,7 +153,7 @@ class ModelInferenceService:
         for features in batch:
             _features = [int(features[feature]) for feature in
                          EXPECTED_FEATURE_ORDER if feature in features]
-           # Append the ordered feature values to the batch
+            # Append the ordered feature values to the batch
             ordered_batch.append(_features)
 
         logger.debug(f'Ordered batch: {ordered_batch}')

@@ -8,7 +8,7 @@ Initializes the main blueprint for the application.
 from datetime import datetime
 from loguru import logger
 
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request
 from flask import flash, redirect, url_for
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
@@ -77,7 +77,7 @@ def evaluation():
         try:
             # 1. Run inference on this request
             model_inference = ModelInferenceService()
-            logger.debug(f'Running model inference...')
+            logger.debug('Running model inference...')
 
             predictions = model_inference.predict([form.data])
             logger.info(f'Prediction resuls: {predictions}')
