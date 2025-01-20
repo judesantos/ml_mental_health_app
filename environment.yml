@@ -22,6 +22,8 @@ dependencies:
   - xgboost
   - bayesian-optimization
   - ipykernel
+  - matplotlib
+  - cachetools
   - pip:
       - annotated-types==0.7.0
       - appnope==0.1.4

@@ -4,19 +4,20 @@ runs:
   using: composite
 
   steps:
-  - name:  Install Poetry
-    uses: snok/install-poetry@v1
+
+  - name: Install Conda
+    uses: s-weigand/setup-conda@v1
     with:
-      virtualenv-in-project: true
+      activate-conda: false
 
   - name: Load cached venv
     uses: actions/cache@v4
-    id: cached-poetry-dependencies
+    id: cached-conda-dependencies
     with:
       path: .venv
       key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
   - name: Install dependencies
-    if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+    if: steps.cached-conda-dependencies.outputs.cache-hit != 'true'
     run: make install
     shell: bash
