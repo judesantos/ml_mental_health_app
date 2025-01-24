@@ -34,9 +34,14 @@ def init_app_configs(app):
     track_notifications = settings.SQLALCHEMY_TRACK_MODIFICATIONS
     google_discovery_url = settings.GOOGLE_DISCOVERY_URL
 
-    app.config['ENV'] = settings.ENV
+    app.env = settings.ENV
     app.config['SESSION_COOKIE_DOMAIN'] = False
     app.config['SERVER_NAME'] = settings.SERVER_NAME
+    app.config['SERVER_PORT'] = settings.SERVER_PORT
+    app.config['HTTPS_ON'] = settings.HTTPS_ON
+    app.config['HTTPS_CERT'] = settings.HTTPS_CERT
+    app.config['HTTPS_KEY'] = settings.HTTPS_KEY
+    app.config['DEBUG'] = settings.DEBUG
 
     app.config['SECRET_KEY'] = settings.SECRET_KEY
     app.config['JWT_SECRET_KEY'] = settings.JWT_SECRET_KEY
