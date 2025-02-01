@@ -30,6 +30,8 @@ class Settings(BaseSettings):
 
     ENV: str
     SERVER_NAME: str
+    SERVER_PORT: int
+    DEBUG: bool
 
     SECRET_KEY: str
     JWT_SECRET_KEY: str

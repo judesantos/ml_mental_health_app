@@ -35,6 +35,11 @@ def init_app_configs(app):
     google_discovery_url = settings.GOOGLE_DISCOVERY_URL
 
     app.config['ENV'] = settings.ENV
+    app.config['DEBUG'] = settings.DEBUG
+
+    app.config['SERVER_NAME'] = settings.SERVER_NAME
+    app.config['SERVER_PORT'] = settings.SERVER_PORT
+
     app.config['SESSION_COOKIE_DOMAIN'] = False
     app.config['SERVER_NAME'] = settings.SERVER_NAME
 
