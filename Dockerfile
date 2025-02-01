@@ -13,7 +13,6 @@ RUN apt-get update \
 
 COPY app app
 COPY certs certs
-COPY data data
 COPY requirements.txt .
 COPY .env .
 
