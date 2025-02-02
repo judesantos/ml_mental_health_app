@@ -2,6 +2,7 @@
 
 """
 
+import os
 import datetime
 
 from flask import url_for, jsonify
@@ -54,7 +55,8 @@ def init_app_configs(app):
     app.config['JWT_COOKIE_SAMESITE'] = 'Strict'
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
+    database_uri = os.getenv('DATABASE_URL', settings.SQLALCHEMY_DATABASE_URI)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = track_notifications
 
     app.config['GOOGLE_CLIENT_ID'] = settings.GOOGLE_CLIENT_ID
