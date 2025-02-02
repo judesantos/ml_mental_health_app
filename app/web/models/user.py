@@ -8,7 +8,7 @@ Classes:
 import bcrypt
 
 from flask_login import UserMixin
-from web.extensions import db
+from app.web.extensions import db
 
 
 class User(db.Model, UserMixin):

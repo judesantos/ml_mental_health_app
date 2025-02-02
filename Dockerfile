@@ -28,4 +28,4 @@ RUN rm requirements.txt
 EXPOSE 8080
 
 # Run the application - path is /opt/app/app/app_main.py
-CMD ["python3", "app/app_main.py"]
+CMD ["gunicorn", "--certfile=certs/app_certificate.pem", "--keyfile=certs/app_private_key.pem", "--log-level", "warning", "-w", "1", "-b", "0.0.0.0:8080", "app.app_main:app"]

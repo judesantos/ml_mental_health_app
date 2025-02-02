@@ -59,11 +59,6 @@ try:
     database_uri = os.getenv(
         'DATABASE_URL', db_settings.sqlalchemy_database_uri)
 
-    if "localhost" in database_uri or "127.0.0.1" in database_uri:
-        logger.warning(f"Database path: {database_uri}")
-        print('''⚠️ Warning: DATABASE_URL is pointing to
-            localhost instead of Cloud SQL!''')
-
     logger.debug(f"Database path: {database_uri}")
 
     engine = create_engine(

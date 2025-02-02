@@ -9,7 +9,7 @@ The module contains the following functions:
 """
 
 from loguru import logger
-from ml.model.pipeline.collection import load_data_from_db
+from app.ml.model.pipeline.collection import load_data_from_db
 
 
 class MentalHealthData():

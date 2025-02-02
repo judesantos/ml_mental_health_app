@@ -2,7 +2,7 @@
 This module contains the UserInferenceLog model which is used
 to store the logs of the user's inference inputs.
 """
-from web.extensions import db
+from app.web.extensions import db
 
 
 class UserInferenceLog(db.Model):

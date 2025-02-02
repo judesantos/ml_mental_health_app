@@ -10,8 +10,8 @@ import sys
 import argparse
 import json
 
-from ml.model.model_inference import ModelInferenceService
-from ml.model.model_inference import EXPECTED_FEATURE_ORDER
+from app.ml.model.model_inference import ModelInferenceService
+from app.ml.model.model_inference import EXPECTED_FEATURE_ORDER
 
 
 class ParsetArgumentError(argparse.ArgumentParser):

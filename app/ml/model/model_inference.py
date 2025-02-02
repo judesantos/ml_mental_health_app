@@ -17,8 +17,8 @@ import matplotlib
 import pandas as pd
 import xgboost as xgb
 
-from ml.config.model import model_settings as settings
-from ml.model.pipeline.preparation import MentalHealthData
+from app.ml.config.model import model_settings as settings
+from app.ml.model.pipeline.preparation import MentalHealthData
 
 matplotlib.use('Agg')  # Use non-interactive backend
 
