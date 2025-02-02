@@ -56,6 +56,9 @@ def init_app_configs(app):
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
 
     database_uri = os.getenv('DATABASE_URL', settings.SQLALCHEMY_DATABASE_URI)
+    if "localhost" in database_uri or "127.0.0.1" in database_uri:
+        print("⚠️ Warning: DATABASE_URL is pointing to localhost instead of Cloud SQL!")
+
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = track_notifications
 
