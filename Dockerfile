@@ -24,8 +24,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 RUN rm requirements.txt
 
-# Make port 80 available to the world outside this container
-EXPOSE 8080
+# Make port available to the world outside this container
+EXPOSE 443
 
 # Run the application - path is /opt/app/app/app_main.py
-CMD ["gunicorn", "--certfile=certs/app_certificate.pem", "--keyfile=certs/app_private_key.pem", "--log-level", "warning", "-w", "1", "-b", "0.0.0.0:8080", "app.app_main:app"]
+CMD ["gunicorn", "--certfile=certs/app_certificate.pem", "--keyfile=certs/app_private_key.pem", "--log-level=debug", "--workers=1", "--bind=0.0.0.0:443", "app.app_main:app"]

@@ -21,7 +21,8 @@ from app.web.extensions import db
 from app.web.templates.ui.forms.ml_input_form import MlInputForm
 from app.web.templates.ui.forms.ml_input_form import process_form
 
-from app.ml.model.model_inference import ModelInferenceService, prediction_report
+from app.ml.model.model_inference import ModelInferenceService
+from app.ml.model.model_inference import prediction_report
 from app.web.models.user_inference_log import UserInferenceLog
 
 from app.web.extensions import cache_get, cache_push
