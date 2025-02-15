@@ -18,12 +18,12 @@ from flask_jwt_extended import create_access_token  # , jwt_required
 from flask_jwt_extended import unset_jwt_cookies, set_access_cookies
 from flask_login import login_user, logout_user
 
-from web.extensions import db, oauth, limiter
-from web.settings import settings
-from web.models.user import User
+from app.web.extensions import db, oauth, limiter
+from app.web.settings import settings
+from app.web.models.user import User
 
-from web.templates.ui.forms.signup_form import SignupForm
-from web.templates.ui.forms.login_form import LoginForm
+from app.web.templates.ui.forms.signup_form import SignupForm
+from app.web.templates.ui.forms.login_form import LoginForm
 
 from loguru import logger
 

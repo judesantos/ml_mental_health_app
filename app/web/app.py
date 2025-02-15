@@ -2,6 +2,7 @@
 
 """
 
+import os
 import datetime
 
 from flask import url_for, jsonify
@@ -9,13 +10,13 @@ from flask import Flask, request, redirect
 from flask_talisman import Talisman
 from flask_login import current_user
 
-from web.routes import main, auth
-from web.settings import settings
-from web.extensions import jwt, login_manager, limiter
-from web.models.user import User
+from app.web.routes import main, auth
+from app.web.settings import settings
+from app.web.extensions import jwt, login_manager, limiter
+from app.web.models.user import User
 
 from loguru import logger
-from ml.config.logging import configure_logging
+from app.ml.config.logging import configure_logging
 
 
 def init_app_configs(app):
@@ -34,7 +35,15 @@ def init_app_configs(app):
     track_notifications = settings.SQLALCHEMY_TRACK_MODIFICATIONS
     google_discovery_url = settings.GOOGLE_DISCOVERY_URL
 
-    app.env = settings.ENV
+    app.config['ENV'] = settings.ENV
+    app.config['DEBUG'] = settings.DEBUG
+
+    app.config['AI_BACKEND'] = settings.AI_BACKEND
+    app.config['VERTEX_AI_ENDPOINT'] = settings.VERTEX_AI_ENDPOINT
+
+    app.config['SERVER_NAME'] = settings.SERVER_NAME
+    app.config['SERVER_PORT'] = settings.SERVER_PORT
+
     app.config['SESSION_COOKIE_DOMAIN'] = False
     app.config['SERVER_NAME'] = settings.SERVER_NAME
     app.config['SERVER_PORT'] = settings.SERVER_PORT
@@ -54,7 +63,8 @@ def init_app_configs(app):
     app.config['JWT_COOKIE_SAMESITE'] = 'Strict'
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
+    database_uri = os.getenv('DATABASE_URL', settings.SQLALCHEMY_DATABASE_URI)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = track_notifications
 
     app.config['GOOGLE_CLIENT_ID'] = settings.GOOGLE_CLIENT_ID
@@ -99,7 +109,7 @@ def init_middleware_callbacks(app, failback_page='auth.home'):
     @app.before_request
     def redirect_to_https():
         # Redirect to HTTPS if not in development mode
-        if not request.is_secure and app.env != "development":
+        if not request.is_secure and app.config['ENV'] != "development":
             return redirect(request.url.replace("http://", "https://"))
 
     @app.route('/debug')

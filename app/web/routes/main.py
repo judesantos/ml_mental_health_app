@@ -14,17 +14,18 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt_identity
 from flask_login import current_user
 
-from web.extensions import limiter
-from web.models.mental_health_inference import MentalHealthDbInferenceModel
-from web.extensions import db
+from app.web.extensions import limiter
+from app.web.models.mental_health_inference import MentalHealthDbInferenceModel
+from app.web.extensions import db
 
-from web.templates.ui.forms.ml_input_form import MlInputForm
-from web.templates.ui.forms.ml_input_form import process_form
+from app.web.templates.ui.forms.ml_input_form import MlInputForm
+from app.web.templates.ui.forms.ml_input_form import process_form
 
-from ml.model.model_inference import ModelInferenceService, prediction_report
-from web.models.user_inference_log import UserInferenceLog
+from app.ml.model.model_inference import ModelInferenceService
+from app.ml.model.model_inference import prediction_report
+from app.web.models.user_inference_log import UserInferenceLog
 
-from web.extensions import cache_get, cache_push
+from app.web.extensions import cache_get, cache_push
 
 
 bp = Blueprint('main', __name__)

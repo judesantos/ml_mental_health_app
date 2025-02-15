@@ -5,7 +5,7 @@ This module is the entry point for the model builder application.
 The module contains the main function that runs the model training pipeline.
 """
 
-from ml.model.model_builder import ModelBuilderService
+from app.ml.model.model_builder import ModelBuilderService
 
 
 def main():

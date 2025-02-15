@@ -6,12 +6,12 @@ The module initializes the database configuration settings and connection
 setup for the application.
 """
 
+import os
+import sys
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
-import sys
 from loguru import logger
-
 from sqlalchemy import create_engine
 
 
@@ -56,11 +56,13 @@ try:
 
     logger.debug("Setting up Db engine...")
 
-    db_sql_uri = db_settings.sqlalchemy_database_uri
-    logger.debug(f"Database path: {db_sql_uri}")
+    database_uri = os.getenv(
+        'DATABASE_URL', db_settings.sqlalchemy_database_uri)
+
+    logger.debug(f"Database path: {database_uri}")
 
     engine = create_engine(
-        db_sql_uri,
+        database_uri,
         echo=db_settings.db_debug
     )
 

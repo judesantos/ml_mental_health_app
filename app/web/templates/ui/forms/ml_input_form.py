@@ -8,8 +8,8 @@ Classes:
     SurveyForm: A class used to create the survey form for the application.
 """
 
-from web.templates.ui.ml_features import create_features
-from web.templates.ui.ml_features import MLFeaturesMap, MLFeature
+from app.web.templates.ui.ml_features import create_features
+from app.web.templates.ui.ml_features import MLFeaturesMap, MLFeature
 from wtforms import SelectField, SubmitField
 from flask_wtf import FlaskForm
 

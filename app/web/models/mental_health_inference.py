@@ -1,5 +1,5 @@
 from sqlalchemy import Integer
-from web.extensions import db
+from app.web.extensions import db
 
 
 class MentalHealthDbInferenceModel(db.Model):
