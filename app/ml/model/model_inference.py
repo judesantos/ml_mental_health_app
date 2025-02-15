@@ -19,6 +19,10 @@ import xgboost as xgb
 
 from app.ml.config.model import model_settings as settings
 from app.ml.model.pipeline.preparation import MentalHealthData
+from app import app
+
+from google.cloud import aiplatform
+
 
 matplotlib.use('Agg')  # Use non-interactive backend
 
@@ -113,51 +117,74 @@ class ModelInferenceService:
         logger.info('Making predictions...')
         logger.debug(f'Data:\n {batch}')
 
-        _batch = self._reorder_features(batch)
-        batch_df = pd.DataFrame(_batch, columns=FEATURE_NAMES)
+        if app.config['BACKEND'] == 'gcp':
+            # Use GCP model service
+            return self._gcp_backend_processing_predict(batch)
+        else:
+            # Use stand-alone built in model service
+            return self._local_backend_processing_predict(batch)
 
-        # Prepare our inference data
-        # MentalHealthData can process both feature with target data,
-        # or just feature data, including composite features
-        # In this case, we are only interested in the feature and composite
-        # data
-        mh = MentalHealthData(batch_df)
 
-        # XGb expects data in DMatrix format
-        xgb_features = xgb.DMatrix(mh.get_data())
+def _gcp_backend_processing_predict(self, batch: List[Dict[str, str]]):
+    """
+    Make a prediction using the pre-trained model in GCP (Vertex AI) platform.
+    """
+    endpoint = app.config['VERTEX_AI_ENDPOINT']
+    client = aiplatform.gapic.PredictionServiceClient()
 
-        # Make predictions
-        return self.model.predict(xgb_features)
+    return client.predict(endpoint, instances=batch)
 
-    def _reorder_features(self, batch: List[Dict[str, str]]):
-        """
-        Reorder input data to match the expected feature order.
-        The submitted batch data is expected to be without missing values
 
-        The reordering requires the incoming batch to be in dictionary format
-        so as to be able to determine the feature names of each input value.
-        Once the proper order is determnined, we can now do away with the
-        column names in the batch and return only the values in
-        the correct order.
+def _local_backend_processing_predict(self, batch: List[Dict[str, str]]):
+    """
+    Make a prediction using the pre-trained model on the local python backend.
+    """
+    _batch = self._reorder_features(batch)
+    batch_df = pd.DataFrame(_batch, columns=FEATURE_NAMES)
 
-        Args:
-            data list[dict]: Input data as a dictionary.
-            expected_order (list): List of features in the correct order.
+    # Prepare our inference data
+    # MentalHealthData can process both feature with target data,
+    # or just feature data, including composite features
+    # In this case, we are only interested in the feature and composite
+    # data
+    mh = MentalHealthData(batch_df)
 
-        Returns:
-            list[List]: Batch of features in the correct order.
-        """
+    # XGb expects data in DMatrix format
+    xgb_features = xgb.DMatrix(mh.get_data())
 
-        ordered_batch = []
+    # Make predictions
+    return self.model.predict(xgb_features)
 
-        for features in batch:
-            _features = [int(features[feature]) for feature in
-                         EXPECTED_FEATURE_ORDER if feature in features]
-            # Append the ordered feature values to the batch
-            ordered_batch.append(_features)
 
-        logger.debug(f'Ordered batch: {ordered_batch}')
-        return ordered_batch
+def _reorder_features(self, batch: List[Dict[str, str]]):
+    """
+    Reorder input data to match the expected feature order.
+    The submitted batch data is expected to be without missing values
+
+    The reordering requires the incoming batch to be in dictionary format
+    so as to be able to determine the feature names of each input value.
+    Once the proper order is determnined, we can now do away with the
+    column names in the batch and return only the values in
+    the correct order.
+
+    Args:
+        data list[dict]: Input data as a dictionary.
+        expected_order (list): List of features in the correct order.
+
+    Returns:
+        list[List]: Batch of features in the correct order.
+    """
+
+    ordered_batch = []
+
+    for features in batch:
+        _features = [int(features[feature]) for feature in
+                     EXPECTED_FEATURE_ORDER if feature in features]
+        # Append the ordered feature values to the batch
+        ordered_batch.append(_features)
+
+    logger.debug(f'Ordered batch: {ordered_batch}')
+    return ordered_batch
 
 
 def prediction_report(probabilities: list, plot=True) -> tuple[list, str]:

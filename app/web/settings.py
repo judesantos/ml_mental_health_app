@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     SERVER_PORT: int
     DEBUG: bool
 
+    AI_BACKEND: str
+    VERTEX_AI_ENDPOINT: str
+
     SECRET_KEY: str
     JWT_SECRET_KEY: str
     JWT_COOKIE_SECURE: bool
