@@ -13,7 +13,7 @@ run:
 
 # Start the app frontend and backend
 start:
-	@python3 app/app_main.py
+	@python3 -m app.app_main
 
 # Conda environment operations
 install:

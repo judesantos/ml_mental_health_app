@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     ENV: str
     SERVER_NAME: str
     SERVER_PORT: int
+    HTTPS_ON: bool
+    HTTPS_CERT: str
+    HTTPS_KEY: str
     DEBUG: bool
 
     AI_BACKEND: str

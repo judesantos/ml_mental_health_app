@@ -19,7 +19,7 @@ import xgboost as xgb
 
 from app.ml.config.model import model_settings as settings
 from app.ml.model.pipeline.preparation import MentalHealthData
-from app import app
+import app
 
 from google.cloud import aiplatform
 
