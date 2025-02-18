@@ -19,9 +19,8 @@ import xgboost as xgb
 
 from app.ml.config.model import model_settings as settings
 from app.ml.model.pipeline.preparation import MentalHealthData
-import app
-
-from google.cloud import aiplatform
+from app.ml.config.gcp import gcp_settings
+from app.ml.gcp_endpoint import get_prediction
 
 
 matplotlib.use('Agg')  # Use non-interactive backend
@@ -74,8 +73,6 @@ class ModelInferenceService:
         self.model_path = settings.model_path
         self.model_name = settings.model_name
 
-        self._load_model()
-
     def _load_model(self):
         """
         Load a pre-trained model from config path
@@ -88,17 +85,18 @@ class ModelInferenceService:
           None
         """
 
-        try:
+        if self.model is None:
+            try:
 
-            logger.info('Loading model...')
-            model_path = Path(f'{self.model_path}/{self.model_name}')
+                logger.info('Loading model...')
+                model_path = Path(f'{self.model_path}/{self.model_name}')
 
-            logger.info(f'Loading model from {model_path}')
-            with open(model_path, 'rb') as model_file:
-                self.model = pk.load(model_file)
+                logger.info(f'Loading model from {model_path}')
+                with open(model_path, 'rb') as model_file:
+                    self.model = pk.load(model_file)
 
-        except Exception as e:
-            logger.error(f'Error loading model: {e}')
+            except Exception as e:
+                logger.error(f'Error loading model: {e}')
 
     def predict(self, batch: List[Dict[str, str]]):
         """
@@ -117,74 +115,73 @@ class ModelInferenceService:
         logger.info('Making predictions...')
         logger.debug(f'Data:\n {batch}')
 
-        if app.config['BACKEND'] == 'gcp':
+        if gcp_settings.ai_backend == 'gcp':
             # Use GCP model service
             return self._gcp_backend_processing_predict(batch)
         else:
             # Use stand-alone built in model service
             return self._local_backend_processing_predict(batch)
 
+    def _gcp_backend_processing_predict(self, batch):
+        """
+        Make a prediction using the pre-trained model in GCP (Vertex AI) platform.
+        """
+        logger.info('Making prediction using GCP backend...')
 
-def _gcp_backend_processing_predict(self, batch: List[Dict[str, str]]):
-    """
-    Make a prediction using the pre-trained model in GCP (Vertex AI) platform.
-    """
-    endpoint = app.config['VERTEX_AI_ENDPOINT']
-    client = aiplatform.gapic.PredictionServiceClient()
+        return get_prediction(batch)
 
-    return client.predict(endpoint, instances=batch)
+    def _local_backend_processing_predict(self, batch: List[Dict[str, str]]):
+        """
+        Make a prediction using the pre-trained model on the local python backend.
+        """
 
+        self._load_model()
 
-def _local_backend_processing_predict(self, batch: List[Dict[str, str]]):
-    """
-    Make a prediction using the pre-trained model on the local python backend.
-    """
-    _batch = self._reorder_features(batch)
-    batch_df = pd.DataFrame(_batch, columns=FEATURE_NAMES)
+        _batch = self._reorder_features(batch)
+        batch_df = pd.DataFrame(_batch, columns=FEATURE_NAMES)
 
-    # Prepare our inference data
-    # MentalHealthData can process both feature with target data,
-    # or just feature data, including composite features
-    # In this case, we are only interested in the feature and composite
-    # data
-    mh = MentalHealthData(batch_df)
+        # Prepare our inference data
+        # MentalHealthData can process both feature with target data,
+        # or just feature data, including composite features
+        # In this case, we are only interested in the feature and composite
+        # data
+        mh = MentalHealthData(batch_df)
 
-    # XGb expects data in DMatrix format
-    xgb_features = xgb.DMatrix(mh.get_data())
+        # XGb expects data in DMatrix format
+        xgb_features = xgb.DMatrix(mh.get_data())
 
-    # Make predictions
-    return self.model.predict(xgb_features)
+        # Make predictions
+        return self.model.predict(xgb_features)
 
+    def _reorder_features(self, batch: List[Dict[str, str]]):
+        """
+        Reorder input data to match the expected feature order.
+        The submitted batch data is expected to be without missing values
 
-def _reorder_features(self, batch: List[Dict[str, str]]):
-    """
-    Reorder input data to match the expected feature order.
-    The submitted batch data is expected to be without missing values
+        The reordering requires the incoming batch to be in dictionary format
+        so as to be able to determine the feature names of each input value.
+        Once the proper order is determnined, we can now do away with the
+        column names in the batch and return only the values in
+        the correct order.
 
-    The reordering requires the incoming batch to be in dictionary format
-    so as to be able to determine the feature names of each input value.
-    Once the proper order is determnined, we can now do away with the
-    column names in the batch and return only the values in
-    the correct order.
+        Args:
+            data list[dict]: Input data as a dictionary.
+            expected_order (list): List of features in the correct order.
 
-    Args:
-        data list[dict]: Input data as a dictionary.
-        expected_order (list): List of features in the correct order.
+        Returns:
+            list[List]: Batch of features in the correct order.
+        """
 
-    Returns:
-        list[List]: Batch of features in the correct order.
-    """
+        ordered_batch = []
 
-    ordered_batch = []
+        for features in batch:
+            _features = [int(features[feature]) for feature in
+                         EXPECTED_FEATURE_ORDER if feature in features]
+            # Append the ordered feature values to the batch
+            ordered_batch.append(_features)
 
-    for features in batch:
-        _features = [int(features[feature]) for feature in
-                     EXPECTED_FEATURE_ORDER if feature in features]
-        # Append the ordered feature values to the batch
-        ordered_batch.append(_features)
-
-    logger.debug(f'Ordered batch: {ordered_batch}')
-    return ordered_batch
+        logger.debug(f'Ordered batch: {ordered_batch}')
+        return ordered_batch
 
 
 def prediction_report(probabilities: list, plot=True) -> tuple[list, str]:

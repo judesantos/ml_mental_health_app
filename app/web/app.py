@@ -38,9 +38,6 @@ def init_app_configs(app):
     app.config['ENV'] = settings.ENV
     app.config['DEBUG'] = settings.DEBUG
 
-    app.config['AI_BACKEND'] = settings.AI_BACKEND
-    app.config['VERTEX_AI_ENDPOINT'] = settings.VERTEX_AI_ENDPOINT
-
     app.config['SERVER_NAME'] = settings.SERVER_NAME
     app.config['SERVER_PORT'] = settings.SERVER_PORT
 

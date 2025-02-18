@@ -80,11 +80,14 @@ def evaluation():
             model_inference = ModelInferenceService()
             logger.debug('Running model inference...')
 
-            predictions = model_inference.predict([form.data])
-            logger.info(f'Prediction resuls: {predictions}')
+            filtered_data = {key: value for key, value in form.data.items() if key not in [
+                'submit_button', 'csrf_token']}
+
+            predictions = model_inference.predict([filtered_data])
+            logger.info(f'Prediction results: {predictions}')
 
             # 2. Generate the report data and chart
-            data, chart_url = prediction_report(predictions[0].tolist())
+            data, chart_url = prediction_report(predictions[0])
 
             # 3. Save the inference data in the db, and log the event
 
