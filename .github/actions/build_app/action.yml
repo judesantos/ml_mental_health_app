@@ -4,29 +4,24 @@ runs:
   using: composite
 
   steps:
-  - name: Install Miniconda
-    uses: conda-incubator/setup-miniconda@v2
-    with:
-      auto-update-conda: true
-      miniforge-variant: Mambaforge  # Optimized Conda variant
-      environment-file: environment.yml  # Use `environment.yml` for dependencies
-      use-mamba: true  # Faster package solver
-      activate-environment: ml_env  # Auto-activates `ml_env`
 
-  - name: Load cached Conda environment
+  - name: Install Conda
+    uses: s-weigand/setup-conda@v1
+    with:
+      activate-conda: false
+
+  - name: Load cached venv
     uses: actions/cache@v4
     id: cached-conda-dependencies
     with:
-      path: /usr/share/miniconda/envs/ml_env
-      key: conda-${{ runner.os }}-${{ hashFiles('environment.yml') }}
+      path: .venv
+      key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
-  - name: Verify Conda Environment & Install Dependencies
+  - name: Install dependencies
+    if: steps.cached-conda-dependencies.outputs.cache-hit != 'true'
     run: |
-      conda info --envs  # Verify the correct Conda environment
-      conda list  # Check installed dependencies
-    shell: bash
-
-  - name: Run Installation Commands
-    run: |
-      make install  # Run setup commands (without extra activation)
+      source $CONDA/bin/activate base
+      conda update -n base --all -y
+      conda info --envs
+      make install
     shell: bash
