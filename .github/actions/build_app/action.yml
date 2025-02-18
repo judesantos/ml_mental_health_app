@@ -4,13 +4,10 @@ runs:
   using: composite
 
   steps:
-
   - name: Install Conda
-    uses: conda-incubator/setup-miniconda@v2
+    uses: s-weigand/setup-conda@v1
     with:
-      auto-update-conda: true
-      activate-environment: base
-      use-only-tar-bz2: true  # Prevents compatibility issues
+      activate-conda: false  # Prevents automatic activation of `base`
 
   - name: Load cached venv
     uses: actions/cache@v4
@@ -21,5 +18,9 @@ runs:
 
   - name: Install dependencies
     if: steps.cached-conda-dependencies.outputs.cache-hit != 'true'
-    run: make install
+    run: |
+      source $CONDA/bin/activate base  # Activate base environment correctly
+      conda update -n base --all -y  # Update base instead of creating it
+      conda info --envs  # Verify Conda environments
+      make install
     shell: bash
